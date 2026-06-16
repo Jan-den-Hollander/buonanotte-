@@ -294,6 +294,52 @@
   #status.done { color: #3a8050; }
   #status.error { color: #a03020; font-style: normal; }
 
+  /* Accordion stem-info */
+  .stem-accordion {
+    margin-bottom: 16px;
+  }
+
+  .stem-toggle {
+    width: 100%;
+    background: none;
+    border: 1.5px solid rgba(184,148,90,0.35);
+    border-radius: 8px;
+    padding: 9px 14px;
+    color: var(--amber);
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-width: unset;
+    flex: unset;
+    transition: background 0.2s;
+  }
+
+  .stem-toggle:hover { background: rgba(184,148,90,0.08); }
+
+  .stem-panel {
+    display: none;
+    background: linear-gradient(135deg, #2d1040, #1a0a2e);
+    border: 1px solid rgba(240,192,96,0.2);
+    border-top: none;
+    border-radius: 0 0 8px 8px;
+    padding: 14px 16px 16px;
+    color: #f0e0c0;
+    font-size: 0.86rem;
+    line-height: 1.75;
+  }
+
+  .stem-panel.open { display: block; }
+
+  .stem-panel p { margin-bottom: 8px; }
+  .stem-panel p:last-child { margin-bottom: 0; }
+  .stem-panel strong { color: var(--star); }
+
   /* Word highlight */
   #readText {
     display: none;
@@ -387,10 +433,11 @@
     <div class="divider">✦ ✦ ✦</div>
 
     <div class="istruzioni">
-      <strong>🎙️ Come registrare la storia</strong>
+      <strong>🎙️ Come usare l'app</strong>
       <ol>
-        <li>Apri la tua <strong style="color:#f0c060;text-transform:none;display:inline;font-size:inherit;letter-spacing:0">app registratore</strong> e avvia la registrazione.</li>
-        <li>Torna qui — oppure usa lo <strong style="color:#f0c060;text-transform:none;display:inline;font-size:inherit;letter-spacing:0">schermo diviso</strong> per tenere entrambe le app aperte insieme.</li>
+        <li>Incolla o scrivi la tua storia nel campo qui sotto.</li>
+        <li>Scegli la voce e regola la velocità.</li>
+        <li>Apri la tua <strong style="color:#f0c060;text-transform:none;display:inline;font-size:inherit;letter-spacing:0">app registratore</strong> — oppure usa lo <strong style="color:#f0c060;text-transform:none;display:inline;font-size:inherit;letter-spacing:0">schermo diviso</strong> per tenere entrambe le app aperte insieme.</li>
         <li>Premi <strong style="color:#f0c060;text-transform:none;display:inline;font-size:inherit;letter-spacing:0">▶ Leggi</strong> e aspetta che la storia finisca.</li>
         <li>Ferma la registrazione e salva il file MP3.</li>
       </ol>
@@ -415,6 +462,16 @@ E così accadde. Pippo e Jolina giocarono insieme. Un giorno nel giardinetto di 
       <div class="control-group">
         <label>🎙️ Voce</label>
         <select id="voiceSelect"><option>Caricamento voci...</option></select>
+        <div class="stem-accordion">
+          <button class="stem-toggle" onclick="toggleStemInfo(this)" type="button">
+            ℹ️ Come ottenere più voci <span class="arrow">▼</span>
+          </button>
+          <div class="stem-panel">
+            <p>Le voci disponibili dipendono da quelle installate sul tuo telefono.</p>
+            <p><strong>Su Android:</strong> vai in <strong>Impostazioni → Accessibilità → Sintesi vocale</strong> (o cerca "text-to-speech"). Scegli <strong>Google Text-to-Speech</strong> come motore preferito, poi tocca l'ingranaggio ⚙️ → <strong>Installa dati vocali</strong> → Italiano. Troverai voci femminili e maschili. Dopo l'installazione, ricarica questa pagina — le nuove voci appariranno automaticamente nell'elenco.</p>
+            <p><strong>Voci più naturali:</strong> servizi come ElevenLabs o Acapela offrono voci di alta qualità, ma richiedono un account e sono a pagamento.</p>
+          </div>
+        </div>
       </div>
       <div class="control-group">
         <label>🐢 Velocità: <span id="rateVal">0.78</span>×</label>
@@ -456,6 +513,15 @@ E così accadde. Pippo e Jolina giocarono insieme. Un giorno nel giardinetto di 
 </div>
 
 <script>
+  function toggleStemInfo(btn) {
+    const panel = btn.nextElementSibling;
+    const arrow = btn.querySelector('.arrow');
+    const open = panel.classList.toggle('open');
+    arrow.textContent = open ? '▲' : '▼';
+    if (open) btn.style.borderRadius = '8px 8px 0 0';
+    else btn.style.borderRadius = '8px';
+  }
+
   // ── Voice loading ──────────────────────────────────────────────────
   const synth = window.speechSynthesis;
   const voiceSelect = document.getElementById('voiceSelect');
@@ -548,6 +614,9 @@ E così accadde. Pippo e Jolina giocarono insieme. Un giorno nel giardinetto di 
     const text = document.getElementById('storyText').value.trim();
     if (!text) { setStatus('Scrivi prima una storia!', 'error'); return; }
 
+    // Hide input, show reading display
+    document.getElementById('storyText').style.display = 'none';
+    document.querySelector('label[for="storyText"]').style.display = 'none';
     buildWordDisplay(text);
     wordIndex = 0;
 
@@ -587,6 +656,7 @@ E così accadde. Pippo e Jolina giocarono insieme. Un giorno nel giardinetto di 
           document.getElementById('progressBar').style.width = '100%';
           wordSpans.forEach(s => s.classList.remove('spoken'));
           setStatus('Storia terminata 🌙 Sogni d\'oro!', 'done');
+          showTextarea();
           stopRecording();
         };
       }
@@ -617,7 +687,14 @@ E così accadde. Pippo e Jolina giocarono insieme. Un giorno nel giardinetto di 
     document.getElementById('progressBar').style.width = '0%';
     wordSpans.forEach(s => s.classList.remove('spoken'));
     setStatus('Fermato.', '');
+    showTextarea();
     stopRecording();
+  }
+
+  function showTextarea() {
+    document.getElementById('storyText').style.display = 'block';
+    document.querySelector('label[for="storyText"]').style.display = 'block';
+    document.getElementById('readText').style.display = 'none';
   }
 
   function setStatus(msg, cls) {

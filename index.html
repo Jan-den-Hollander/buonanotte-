@@ -836,19 +836,22 @@ async function generateStory() {
     const data = await resp.json();
     const part  = data?.candidates?.[0]?.content?.parts?.[0];
     const b64   = part?.inlineData?.data;
-    const mime  = part?.inlineData?.mimeType || 'audio/wav';
+    const mime  = part?.inlineData?.mimeType || 'audio/L16;rate=24000';
 
     if (!b64) throw new Error('Nessun audio ricevuto da Gemini.');
 
     stopProgress(100);
 
-    const bytes = Uint8Array.from(atob(b64), c => c.charCodeAt(0));
-    audioBlob = new Blob([bytes], { type: mime });
+    // Gemini TTS returns raw PCM (16-bit, 24kHz, mono) — build proper WAV
+    const pcmBytes = Uint8Array.from(atob(b64), c => c.charCodeAt(0));
+    const wavBytes = buildWav(pcmBytes, 24000, 1, 16);
+    audioBlob = new Blob([wavBytes], { type: 'audio/wav' });
 
     const url = URL.createObjectURL(audioBlob);
     const player = document.getElementById('audioPlayer');
     player.src = url;
     player.style.display = 'block';
+    player.load();
     player.play().catch(() => {});
 
     document.getElementById('downloadBtn').style.display = 'flex';
@@ -863,6 +866,29 @@ async function generateStory() {
 
   btn.disabled = false;
   btn.textContent = '▶ Genera storia';
+}
+
+// ── WAV builder ───────────────────────────────────────────────────────
+function buildWav(pcmData, sampleRate, numChannels, bitsPerSample) {
+  const dataLen = pcmData.length;
+  const buffer = new ArrayBuffer(44 + dataLen);
+  const view = new DataView(buffer);
+  const writeStr = (off, str) => { for (let i=0;i<str.length;i++) view.setUint8(off+i, str.charCodeAt(i)); };
+  writeStr(0,  'RIFF');
+  view.setUint32(4,  36 + dataLen, true);
+  writeStr(8,  'WAVE');
+  writeStr(12, 'fmt ');
+  view.setUint32(16, 16, true);
+  view.setUint16(20, 1,  true);  // PCM
+  view.setUint16(22, numChannels, true);
+  view.setUint32(24, sampleRate, true);
+  view.setUint32(28, sampleRate * numChannels * bitsPerSample / 8, true);
+  view.setUint16(32, numChannels * bitsPerSample / 8, true);
+  view.setUint16(34, bitsPerSample, true);
+  writeStr(36, 'data');
+  view.setUint32(40, dataLen, true);
+  new Uint8Array(buffer).set(pcmData, 44);
+  return new Uint8Array(buffer);
 }
 
 // ── Download ─────────────────────────────────────────────────────────

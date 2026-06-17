@@ -5,446 +5,593 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Storie della Buonanotte 🌙</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=Nunito:wght@300;400;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=Nunito:wght@300;400;600;700&display=swap');
 
-  :root {
-    --ink: #2c1a0e;
-    --parchment: #fdf6ec;
-    --warm-mid: #f5e9d0;
-    --amber: #c8813a;
-    --amber-light: #e8a85a;
-    --dusk: #5c3d6e;
-    --star: #f0c060;
-    --shadow: rgba(44,26,14,0.15);
-  }
+:root {
+  --night:    #110820;
+  --deep:     #1e1035;
+  --purple:   #2d1a50;
+  --parchment:#fdf6ec;
+  --warm:     #f5e9d0;
+  --amber:    #c8813a;
+  --amber2:   #e8a85a;
+  --dusk:     #5c3d6e;
+  --dusk2:    #7a52a0;
+  --star:     #f0c060;
+  --green:    #2e7a50;
+  --green2:   #3d9a68;
+  --red:      #8a2a20;
+  --ink:      #2c1a0e;
+  --muted:    #907060;
+}
 
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
 
-  body {
-    min-height: 100vh;
-    background: linear-gradient(160deg, #1a0a2e 0%, #2d1040 40%, #1e1030 100%);
-    display: flex;
-    align-items: flex-start;
-    justify-content: center;
-    padding: 24px 16px 48px;
-    font-family: 'Nunito', sans-serif;
-  }
+body {
+  min-height: 100vh;
+  background: var(--night);
+  background-image:
+    radial-gradient(ellipse at 20% 20%, rgba(92,61,110,0.4) 0%, transparent 60%),
+    radial-gradient(ellipse at 80% 80%, rgba(29,10,52,0.6) 0%, transparent 60%);
+  font-family: 'Nunito', sans-serif;
+  color: var(--parchment);
+}
 
-  /* Stars background */
-  body::before {
-    content: '✦ ˙ · ✦ · ˙ ✦ ˙ · ✦ ✦ · ˙ ✦ ˙ ✦ · ✦ ˙ · ✦ ✦ ˙ ·';
-    position: fixed;
-    top: 0; left: 0; right: 0;
-    color: rgba(255,255,255,0.12);
-    font-size: 22px;
-    letter-spacing: 18px;
-    line-height: 48px;
-    word-break: break-all;
-    pointer-events: none;
-    z-index: 0;
-    padding: 20px;
-  }
+/* Stars */
+.stars {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+.stars::before, .stars::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(1px 1px at 10% 15%, rgba(255,255,255,0.7) 0%, transparent 100%),
+    radial-gradient(1px 1px at 25% 40%, rgba(255,255,255,0.5) 0%, transparent 100%),
+    radial-gradient(1.5px 1.5px at 40% 10%, rgba(255,255,255,0.8) 0%, transparent 100%),
+    radial-gradient(1px 1px at 60% 30%, rgba(255,255,255,0.6) 0%, transparent 100%),
+    radial-gradient(1px 1px at 75% 8%, rgba(255,255,255,0.7) 0%, transparent 100%),
+    radial-gradient(1.5px 1.5px at 88% 22%, rgba(255,255,255,0.5) 0%, transparent 100%),
+    radial-gradient(1px 1px at 15% 60%, rgba(255,255,255,0.4) 0%, transparent 100%),
+    radial-gradient(1px 1px at 50% 55%, rgba(255,255,255,0.6) 0%, transparent 100%),
+    radial-gradient(1px 1px at 92% 50%, rgba(255,255,255,0.5) 0%, transparent 100%),
+    radial-gradient(1.5px 1.5px at 35% 75%, rgba(255,255,255,0.4) 0%, transparent 100%),
+    radial-gradient(1px 1px at 70% 70%, rgba(255,255,255,0.6) 0%, transparent 100%),
+    radial-gradient(1px 1px at 5% 88%, rgba(255,255,255,0.5) 0%, transparent 100%),
+    radial-gradient(1px 1px at 80% 90%, rgba(255,255,255,0.4) 0%, transparent 100%),
+    radial-gradient(2px 2px at 55% 85%, rgba(240,192,96,0.6) 0%, transparent 100%),
+    radial-gradient(1.5px 1.5px at 20% 95%, rgba(240,192,96,0.4) 0%, transparent 100%);
+}
 
-  .book {
-    position: relative;
-    z-index: 1;
-    background: var(--parchment);
-    border-radius: 4px 20px 20px 4px;
-    max-width: 680px;
-    width: 100%;
-    box-shadow:
-      -6px 0 0 #b8945a,
-      -10px 2px 0 #9a7040,
-      0 8px 40px rgba(0,0,0,0.5),
-      inset 12px 0 24px rgba(184,148,90,0.2);
-    overflow: hidden;
-  }
+/* Layout */
+.app {
+  position: relative;
+  z-index: 1;
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 32px 16px 60px;
+}
 
-  .book-spine {
-    position: absolute;
-    left: 0; top: 0; bottom: 0;
-    width: 12px;
-    background: linear-gradient(90deg, #9a7040, #b8945a);
-    border-radius: 4px 0 0 4px;
-  }
+/* Header */
+.header {
+  text-align: center;
+  margin-bottom: 36px;
+}
 
-  .book-inner {
-    padding: 40px 44px 44px 52px;
-  }
+.moon-wrap {
+  font-size: 64px;
+  line-height: 1;
+  margin-bottom: 12px;
+  filter: drop-shadow(0 0 24px rgba(240,192,96,0.5));
+}
 
-  /* Moon decoration */
-  .moon {
-    text-align: center;
-    font-size: 52px;
-    margin-bottom: 4px;
-    filter: drop-shadow(0 0 12px #f0c06080);
-  }
+.header h1 {
+  font-family: 'Lora', serif;
+  font-size: 2rem;
+  font-weight: 600;
+  color: var(--parchment);
+  letter-spacing: 0.02em;
+  margin-bottom: 6px;
+}
 
-  h1 {
-    font-family: 'Lora', serif;
-    font-size: 1.75rem;
-    color: var(--dusk);
-    text-align: center;
-    margin-bottom: 4px;
-    letter-spacing: 0.02em;
-  }
+.header .tagline {
+  font-size: 0.82rem;
+  color: var(--amber2);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  font-weight: 300;
+}
 
-  .subtitle {
-    text-align: center;
-    color: var(--amber);
-    font-size: 0.85rem;
-    font-weight: 300;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    margin-bottom: 28px;
-  }
+/* Tab nav */
+.tabs {
+  display: flex;
+  gap: 4px;
+  background: rgba(255,255,255,0.05);
+  border-radius: 12px;
+  padding: 4px;
+  margin-bottom: 24px;
+}
 
-  /* Divider */
-  .divider {
-    text-align: center;
-    color: var(--amber-light);
-    font-size: 18px;
-    letter-spacing: 8px;
-    margin-bottom: 24px;
-    opacity: 0.6;
-  }
+.tab {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  border-radius: 9px;
+  background: none;
+  color: rgba(240,224,192,0.5);
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  min-width: unset;
+}
 
-  label {
-    display: block;
-    font-size: 0.78rem;
-    font-weight: 600;
-    color: var(--dusk);
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    margin-bottom: 8px;
-  }
+.tab.active {
+  background: var(--purple);
+  color: var(--star);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+}
 
-  textarea {
-    width: 100%;
-    min-height: 280px;
-    padding: 18px 20px;
-    font-family: 'Lora', serif;
-    font-size: 1rem;
-    line-height: 1.8;
-    color: var(--ink);
-    background: var(--warm-mid);
-    border: 1.5px solid rgba(184,148,90,0.3);
-    border-radius: 10px;
-    resize: vertical;
-    outline: none;
-    transition: border-color 0.2s;
-    margin-bottom: 20px;
-  }
+/* Panels */
+.panel { display: none; }
+.panel.active { display: block; }
 
-  textarea:focus {
-    border-color: var(--amber);
-    background: #fdf2e0;
-  }
+/* Cards */
+.card {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 16px;
+}
 
-  /* Controls row */
-  .controls {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 14px;
-    margin-bottom: 20px;
-  }
+.card-title {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--star);
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
 
-  .control-group {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-  }
+/* API Key */
+.key-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+}
 
-  .control-group label {
-    margin-bottom: 0;
-  }
+.key-row input {
+  flex: 1;
+  min-width: 150px;
+  padding: 10px 14px;
+  background: rgba(255,255,255,0.06);
+  border: 1.5px solid rgba(255,255,255,0.12);
+  border-radius: 9px;
+  color: var(--parchment);
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.9rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
 
-  select, input[type=range] {
-    width: 100%;
-  }
+.key-row input:focus { border-color: var(--star); }
+.key-row input::placeholder { color: rgba(240,224,192,0.3); }
 
-  select {
-    padding: 9px 12px;
-    border: 1.5px solid rgba(184,148,90,0.3);
-    border-radius: 8px;
-    background: var(--warm-mid);
-    color: var(--ink);
-    font-family: 'Nunito', sans-serif;
-    font-size: 0.9rem;
-    outline: none;
-    cursor: pointer;
-    appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M0 0l6 8 6-8z' fill='%23c8813a'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 12px center;
-  }
+.key-status {
+  font-size: 0.8rem;
+  color: var(--muted);
+  font-style: italic;
+  margin-bottom: 12px;
+}
+.key-status.ok  { color: #5cb87a; font-style: normal; }
+.key-status.err { color: #e07060; font-style: normal; }
 
-  input[type=range] {
-    -webkit-appearance: none;
-    height: 6px;
-    border-radius: 3px;
-    background: rgba(184,148,90,0.3);
-    outline: none;
-    margin-top: 10px;
-  }
+/* Accordion */
+.acc {
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 9px;
+  overflow: hidden;
+}
 
-  input[type=range]::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    width: 18px; height: 18px;
-    border-radius: 50%;
-    background: var(--amber);
-    cursor: pointer;
-    box-shadow: 0 2px 6px var(--shadow);
-  }
+.acc-head {
+  width: 100%;
+  background: rgba(255,255,255,0.04);
+  border: none;
+  padding: 10px 14px;
+  color: rgba(240,192,96,0.75);
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  min-width: unset;
+  transition: background 0.2s;
+}
+.acc-head:hover { background: rgba(255,255,255,0.07); }
 
-  .range-labels {
-    display: flex;
-    justify-content: space-between;
-    font-size: 0.7rem;
-    color: #a08060;
-    margin-top: 3px;
-  }
+.acc-body {
+  display: none;
+  padding: 14px 16px;
+  font-size: 0.84rem;
+  line-height: 1.78;
+  color: rgba(240,224,192,0.8);
+  border-top: 1px solid rgba(255,255,255,0.08);
+}
+.acc-body.open { display: block; }
+.acc-body ol { padding-left: 18px; }
+.acc-body li { margin-bottom: 6px; }
+.acc-body a { color: var(--star); }
+.acc-body strong { color: #fff; }
+.acc-body .warn { color: #f08060; margin-top: 10px; }
+.acc-body .tip  { color: rgba(200,180,140,0.7); font-size: 0.78rem; margin-top: 8px; }
 
-  /* Buttons */
-  .btn-row {
-    display: flex;
-    gap: 12px;
-    flex-wrap: wrap;
-    margin-bottom: 20px;
-  }
+/* Story textarea */
+.story-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(240,192,96,0.7);
+  margin-bottom: 8px;
+  display: block;
+}
 
-  button {
-    flex: 1;
-    min-width: 120px;
-    padding: 13px 20px;
-    border: none;
-    border-radius: 10px;
-    font-family: 'Nunito', sans-serif;
-    font-size: 0.95rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-  }
+.story-title-input {
+  width: 100%;
+  padding: 10px 14px;
+  background: rgba(255,255,255,0.06);
+  border: 1.5px solid rgba(255,255,255,0.1);
+  border-radius: 9px;
+  color: var(--parchment);
+  font-family: 'Lora', serif;
+  font-size: 1rem;
+  outline: none;
+  margin-bottom: 10px;
+  transition: border-color 0.2s;
+}
+.story-title-input:focus { border-color: var(--amber); }
+.story-title-input::placeholder { color: rgba(240,224,192,0.3); font-style: italic; }
 
-  #playBtn {
-    background: linear-gradient(135deg, var(--dusk), #3d2550);
-    color: white;
-    box-shadow: 0 4px 14px rgba(92,61,110,0.35);
-  }
+textarea {
+  width: 100%;
+  min-height: 220px;
+  padding: 16px 18px;
+  background: rgba(255,255,255,0.06);
+  border: 1.5px solid rgba(255,255,255,0.1);
+  border-radius: 12px;
+  color: var(--parchment);
+  font-family: 'Lora', serif;
+  font-size: 0.97rem;
+  line-height: 1.85;
+  resize: vertical;
+  outline: none;
+  transition: border-color 0.2s;
+  margin-bottom: 14px;
+}
+textarea:focus { border-color: var(--amber); }
+textarea::placeholder { color: rgba(240,224,192,0.25); font-style: italic; }
 
-  #playBtn:hover { transform: translateY(-1px); box-shadow: 0 6px 18px rgba(92,61,110,0.45); }
-  #playBtn:active { transform: translateY(0); }
+/* Controls grid */
+.ctrl-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-bottom: 16px;
+}
 
-  #pauseBtn {
-    background: var(--warm-mid);
-    color: var(--dusk);
-    border: 1.5px solid rgba(92,61,110,0.3);
-  }
+.ctrl-group { display: flex; flex-direction: column; gap: 6px; }
 
-  #pauseBtn:hover { background: #eedfc0; }
+.ctrl-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(240,192,96,0.7);
+}
 
-  #stopBtn {
-    background: var(--warm-mid);
-    color: #a05030;
-    border: 1.5px solid rgba(160,80,48,0.3);
-  }
+select {
+  padding: 9px 30px 9px 12px;
+  background: rgba(255,255,255,0.08);
+  border: 1.5px solid rgba(255,255,255,0.12);
+  border-radius: 9px;
+  color: var(--parchment);
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.88rem;
+  outline: none;
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M0 0l6 8 6-8z' fill='%23e8a85a'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-color: rgba(255,255,255,0.08);
+}
 
-  #stopBtn:hover { background: #f5ddc8; }
+select option { background: #2d1a50; color: var(--parchment); }
 
-  #saveBtn {
-    background: linear-gradient(135deg, #2a6040, #3a8050);
-    color: white;
-    box-shadow: 0 4px 14px rgba(42,96,64,0.3);
-  }
+input[type=range] {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 5px;
+  border-radius: 3px;
+  background: rgba(255,255,255,0.15);
+  outline: none;
+  margin-top: 8px;
+}
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 18px; height: 18px;
+  border-radius: 50%;
+  background: var(--amber2);
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+}
+.range-ends {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.68rem;
+  color: rgba(200,160,100,0.6);
+  margin-top: 3px;
+}
 
-  #saveBtn:hover { transform: translateY(-1px); box-shadow: 0 6px 18px rgba(42,96,64,0.4); }
-  #saveBtn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+/* Buttons */
+button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: none;
+  border-radius: 10px;
+  font-family: 'Nunito', sans-serif;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.18s;
+}
 
-  /* Progress */
-  .progress-wrap {
-    background: rgba(184,148,90,0.15);
-    border-radius: 6px;
-    height: 8px;
-    overflow: hidden;
-    margin-bottom: 10px;
-  }
+.btn-primary {
+  width: 100%;
+  padding: 14px 20px;
+  font-size: 1rem;
+  background: linear-gradient(135deg, var(--dusk), var(--dusk2));
+  color: white;
+  box-shadow: 0 4px 20px rgba(92,61,110,0.4);
+  margin-bottom: 10px;
+}
+.btn-primary:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 6px 24px rgba(92,61,110,0.55); }
+.btn-primary:disabled { opacity: 0.45; cursor: not-allowed; }
 
-  #progressBar {
-    height: 100%;
-    width: 0%;
-    background: linear-gradient(90deg, var(--amber), var(--dusk));
-    border-radius: 6px;
-    transition: width 0.5s linear;
-  }
+.btn-download {
+  width: 100%;
+  padding: 12px 20px;
+  font-size: 0.95rem;
+  background: linear-gradient(135deg, var(--green), var(--green2));
+  color: white;
+  box-shadow: 0 4px 16px rgba(46,122,80,0.35);
+  display: none;
+  margin-bottom: 10px;
+}
+.btn-download:hover { transform: translateY(-1px); }
 
-  /* Status */
-  #status {
-    text-align: center;
-    font-size: 0.85rem;
-    color: #907050;
-    min-height: 22px;
-    font-style: italic;
-  }
+.btn-save-lib {
+  width: 100%;
+  padding: 11px 20px;
+  font-size: 0.9rem;
+  background: rgba(240,192,96,0.12);
+  color: var(--star);
+  border: 1px solid rgba(240,192,96,0.25);
+  display: none;
+  margin-bottom: 10px;
+}
+.btn-save-lib:hover { background: rgba(240,192,96,0.2); }
 
-  #status.active { color: var(--dusk); }
-  #status.done { color: #3a8050; }
-  #status.error { color: #a03020; font-style: normal; }
+.btn-sm {
+  padding: 9px 13px;
+  font-size: 0.82rem;
+}
+.btn-amber { background: var(--amber); color: white; }
+.btn-amber:hover { background: var(--amber2); }
+.btn-ghost { background: rgba(255,255,255,0.08); color: rgba(240,224,192,0.8); border: 1px solid rgba(255,255,255,0.12); }
+.btn-ghost:hover { background: rgba(255,255,255,0.13); }
+.btn-danger { background: rgba(138,42,32,0.3); color: #f09080; border: 1px solid rgba(138,42,32,0.4); }
+.btn-danger:hover { background: rgba(138,42,32,0.5); }
 
-  /* Accordion stem-info */
-  .stem-accordion {
-    margin-bottom: 16px;
-  }
+/* Progress */
+.progress-wrap {
+  background: rgba(255,255,255,0.08);
+  border-radius: 6px;
+  height: 6px;
+  overflow: hidden;
+  margin-bottom: 10px;
+}
+#progressBar {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, var(--amber), var(--dusk2));
+  border-radius: 6px;
+  transition: width 0.4s ease;
+}
 
-  .stem-toggle {
-    width: 100%;
-    background: none;
-    border: 1.5px solid rgba(184,148,90,0.35);
-    border-radius: 8px;
-    padding: 9px 14px;
-    color: var(--amber);
-    font-family: 'Nunito', sans-serif;
-    font-size: 0.82rem;
-    font-weight: 600;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    min-width: unset;
-    flex: unset;
-    transition: background 0.2s;
-  }
+#status {
+  text-align: center;
+  font-size: 0.86rem;
+  color: var(--muted);
+  min-height: 22px;
+  font-style: italic;
+  margin-bottom: 14px;
+}
+#status.active { color: var(--amber2); font-style: normal; }
+#status.done   { color: #5cb87a; font-style: normal; }
+#status.error  { color: #e07060; font-style: normal; }
 
-  .stem-toggle:hover { background: rgba(184,148,90,0.08); }
+/* Audio player */
+audio {
+  display: none;
+  width: 100%;
+  margin-bottom: 10px;
+  border-radius: 8px;
+  filter: invert(0.85) hue-rotate(180deg);
+}
 
-  .stem-panel {
-    display: none;
-    background: linear-gradient(135deg, #2d1040, #1a0a2e);
-    border: 1px solid rgba(240,192,96,0.2);
-    border-top: none;
-    border-radius: 0 0 8px 8px;
-    padding: 14px 16px 16px;
-    color: #f0e0c0;
-    font-size: 0.86rem;
-    line-height: 1.75;
-  }
+/* Library */
+.lib-empty {
+  text-align: center;
+  padding: 40px 20px;
+  color: rgba(200,160,100,0.4);
+  font-style: italic;
+}
+.lib-empty .big { font-size: 40px; margin-bottom: 12px; }
 
-  .stem-panel.open { display: block; }
+.lib-item {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 12px;
+  padding: 14px 16px;
+  margin-bottom: 10px;
+  transition: border-color 0.2s;
+}
+.lib-item:hover { border-color: rgba(240,192,96,0.3); }
 
-  .stem-panel p { margin-bottom: 8px; }
-  .stem-panel p:last-child { margin-bottom: 0; }
-  .stem-panel strong { color: var(--star); }
+.lib-item-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 10px;
+}
 
-  /* Word highlight */
-  #readText {
-    display: none;
-    font-family: 'Lora', serif;
-    font-size: 1rem;
-    line-height: 1.9;
-    color: var(--ink);
-    padding: 18px 20px;
-    background: var(--warm-mid);
-    border-radius: 10px;
-    border: 1.5px solid rgba(184,148,90,0.2);
-    margin-bottom: 16px;
-    max-height: 200px;
-    overflow-y: auto;
-  }
+.lib-item-title {
+  font-family: 'Lora', serif;
+  font-size: 1rem;
+  color: var(--parchment);
+  font-weight: 600;
+}
 
-  .word { transition: background 0.1s; }
-  .word.spoken { background: rgba(240,192,96,0.45); border-radius: 3px; padding: 1px 2px; }
+.lib-item-meta {
+  font-size: 0.74rem;
+  color: var(--muted);
+  margin-top: 2px;
+}
 
-  /* Save info */
-  .istruzioni {
-    background: linear-gradient(135deg, #2d1040, #1a0a2e);
-    border: 1px solid rgba(240,192,96,0.3);
-    border-radius: 10px;
-    padding: 14px 18px;
-    margin-bottom: 22px;
-    color: #f0e0c0;
-    font-size: 0.88rem;
-    line-height: 1.7;
-  }
+.lib-actions {
+  display: flex;
+  gap: 6px;
+  flex-shrink: 0;
+}
 
-  .istruzioni strong {
-    color: var(--star);
-    display: block;
-    margin-bottom: 4px;
-    font-size: 0.82rem;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-  }
+.lib-player {
+  display: none;
+  width: 100%;
+  border-radius: 6px;
+  filter: invert(0.85) hue-rotate(180deg);
+}
 
-  .istruzioni ol {
-    padding-left: 18px;
-    margin: 0;
-  }
+/* Warning box */
+.warn-box {
+  background: rgba(138,42,32,0.15);
+  border: 1px solid rgba(200,80,50,0.3);
+  border-radius: 12px;
+  padding: 14px 16px;
+  margin-bottom: 16px;
+  font-size: 0.84rem;
+  line-height: 1.72;
+  color: rgba(240,200,180,0.9);
+}
+.warn-box .warn-title {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #f08060;
+  display: block;
+  margin-bottom: 8px;
+}
 
-  .istruzioni li {
-    margin-bottom: 2px;
-  }
+/* Info box */
+.info-box {
+  background: rgba(92,61,110,0.15);
+  border: 1px solid rgba(92,61,110,0.3);
+  border-radius: 12px;
+  padding: 14px 16px;
+  margin-bottom: 16px;
+  font-size: 0.84rem;
+  line-height: 1.72;
+  color: rgba(220,200,240,0.85);
+}
+.info-box .info-title {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--dusk2);
+  display: block;
+  margin-bottom: 8px;
+}
 
-  .save-note {
-    font-size: 0.75rem;
-    color: #b09070;
-    text-align: center;
-    margin-top: 12px;
-    font-style: italic;
-  }
+.save-note {
+  text-align: center;
+  font-size: 0.73rem;
+  color: rgba(180,140,100,0.5);
+  font-style: italic;
+  margin-top: 6px;
+}
 
-  #downloadLink {
-    display: none;
-    text-align: center;
-    margin-top: 12px;
-    padding: 10px 20px;
-    background: linear-gradient(135deg, #2a6040, #3a8050);
-    color: white;
-    border-radius: 8px;
-    text-decoration: none;
-    font-weight: 600;
-    font-size: 0.9rem;
-  }
-
-  #downloadLink:hover { background: linear-gradient(135deg, #3a7050, #4a9060); }
-
-  @media (max-width: 480px) {
-    .book-inner { padding: 28px 24px 32px 32px; }
-    h1 { font-size: 1.4rem; }
-    .controls { grid-template-columns: 1fr; }
-    .btn-row { flex-direction: column; }
-    button { min-width: unset; }
-  }
+@media (max-width: 480px) {
+  .header h1 { font-size: 1.5rem; }
+  .ctrl-grid { grid-template-columns: 1fr; }
+  .app { padding: 20px 12px 60px; }
+}
 </style>
 </head>
 <body>
+<div class="stars"></div>
+<div class="app">
 
-<div class="book">
-  <div class="book-spine"></div>
-  <div class="book-inner">
-
-    <div class="moon">🌙</div>
+  <!-- HEADER -->
+  <div class="header">
+    <div class="moon-wrap">🌙</div>
     <h1>Storie della Buonanotte</h1>
-    <p class="subtitle">Lettore di fiabe per bambini</p>
-    <div class="divider">✦ ✦ ✦</div>
+    <p class="tagline">Fiabe italiane · voce Gemini AI</p>
+  </div>
 
-    <div class="istruzioni">
-      <strong>🎙️ Come usare l'app</strong>
-      <ol>
-        <li>Incolla o scrivi la tua storia nel campo qui sotto.</li>
-        <li>Scegli la voce e regola la velocità.</li>
-        <li>Apri la tua <strong style="color:#f0c060;text-transform:none;display:inline;font-size:inherit;letter-spacing:0">app registratore</strong> — oppure usa lo <strong style="color:#f0c060;text-transform:none;display:inline;font-size:inherit;letter-spacing:0">schermo diviso</strong> per tenere entrambe le app aperte insieme.</li>
-        <li>Premi <strong style="color:#f0c060;text-transform:none;display:inline;font-size:inherit;letter-spacing:0">▶ Leggi</strong> e aspetta che la storia finisca.</li>
-        <li>Ferma la registrazione e salva il file MP3.</li>
+  <!-- TABS -->
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('crea')">✍️ Crea</button>
+    <button class="tab" onclick="switchTab('biblioteca')">📚 Biblioteca</button>
+    <button class="tab" onclick="switchTab('impostazioni')">⚙️ Impostazioni</button>
+  </div>
+
+  <!-- ══════════════ TAB: CREA ══════════════ -->
+  <div class="panel active" id="panel-crea">
+
+    <div class="info-box">
+      <span class="info-title">📖 Come funziona</span>
+      <ol style="padding-left:18px; margin:0;">
+        <li>Dai un titolo alla storia e incolla il testo.</li>
+        <li>Scegli la voce e la velocità.</li>
+        <li>Premi <strong>▶ Genera storia</strong> — Gemini AI crea l'audio.</li>
+        <li>Ascolta l'anteprima, poi <strong>salva nella Biblioteca</strong> per riascoltarla in futuro, oppure <strong>scarica il file WAV</strong> sul telefono.</li>
       </ol>
     </div>
 
-    <label for="storyText">✍️ La tua storia</label>
-    <textarea id="storyText" placeholder="Incolla qui la tua storia in italiano...">Pippo camminava nel giardino e si annoiava tanto. Ma guarda! Cosa vide lì? Un piccolo buchino nella siepe.
+    <!-- Title -->
+    <span class="story-label">📌 Titolo della storia</span>
+    <input type="text" class="story-title-input" id="storyTitle" placeholder="es. Pippo e il buchino nella siepe…">
+
+    <!-- Text -->
+    <span class="story-label">✍️ Testo</span>
+    <textarea id="storyText" placeholder="Incolla qui la storia in italiano…">Pippo camminava nel giardino e si annoiava tanto. Ma guarda! Cosa vide lì? Un piccolo buchino nella siepe.
 "Cosa ci sarà dall'altra parte della siepe?", pensò Pippo. Un palazzo? Uno steccato? Un cavaliere? Si sedette per terra e guardò attraverso il buchino. E cosa vide? Un piccolo nasino, una piccola boccuccia e due occhietti azzurri. Lì c'era una bambina. Era grande proprio come Pippo.
 "Come ti chiami?", chiese Pippo.
 "Jolina", disse la bambina. "Io abito qui."
@@ -456,338 +603,420 @@ In quel momento il papà di Pippo accorse in un giardino, e il papà di Jolina a
 "Ecco fatto", disse il papà di Pippo. "Adesso hai una vicina di casa. Però prima devi uscire per benino dalla porta d'ingresso ed entrare dalla porta di Jolina. Solo allora potrete giocare insieme."
 E così accadde. Pippo e Jolina giocarono insieme. Un giorno nel giardinetto di Pippo, e il giorno dopo nel giardinetto di Jolina. E giocavano... a fare il papà e la mamma.</textarea>
 
-    <div id="readText"></div>
-
-    <div class="controls">
-      <div class="control-group">
-        <label>🎙️ Voce</label>
-        <select id="voiceSelect"><option>Caricamento voci...</option></select>
-        <div class="stem-accordion">
-          <button class="stem-toggle" onclick="toggleStemInfo(this)" type="button">
-            ℹ️ Come ottenere più voci <span class="arrow">▼</span>
-          </button>
-          <div class="stem-panel">
-            <p>Le voci disponibili dipendono da quelle installate sul tuo telefono.</p>
-            <p><strong>Su Android:</strong> vai in <strong>Impostazioni → Accessibilità → Sintesi vocale</strong> (o cerca "text-to-speech"). Scegli <strong>Google Text-to-Speech</strong> come motore preferito, poi tocca l'ingranaggio ⚙️ → <strong>Installa dati vocali</strong> → Italiano. Troverai voci femminili e maschili. Dopo l'installazione, ricarica questa pagina — le nuove voci appariranno automaticamente nell'elenco.</p>
-            <p><strong>Voci più naturali:</strong> servizi come ElevenLabs o Acapela offrono voci di alta qualità, ma richiedono un account e sono a pagamento.</p>
-          </div>
-        </div>
+    <!-- Controls -->
+    <div class="ctrl-grid">
+      <div class="ctrl-group">
+        <span class="ctrl-label">🎙️ Voce</span>
+        <select id="voiceSelect">
+          <option value="Zephyr">Zephyr — calda, serena (♀)</option>
+          <option value="Kore">Kore — morbida, narrativa (♀)</option>
+          <option value="Leda">Leda — dolce, rilassante (♀)</option>
+          <option value="Aoede">Aoede — chiara, espressiva (♀)</option>
+          <option value="Charon">Charon — gentile, chiaro (♂)</option>
+          <option value="Fenrir">Fenrir — caldo, profondo (♂)</option>
+          <option value="Orus">Orus — stabile, tranquillo (♂)</option>
+          <option value="Puck">Puck — vivace, leggero (♂)</option>
+        </select>
       </div>
-      <div class="control-group">
-        <label>🐢 Velocità: <span id="rateVal">0.78</span>×</label>
-        <input type="range" id="rateSlider" min="0.5" max="1.1" step="0.02" value="0.78">
-        <div class="range-labels"><span>lento</span><span>normale</span></div>
-      </div>
-      <div class="control-group">
-        <label>🎵 Tono: <span id="pitchVal">0.95</span></label>
-        <input type="range" id="pitchSlider" min="0.6" max="1.4" step="0.05" value="0.95">
-        <div class="range-labels"><span>grave</span><span>acuto</span></div>
-      </div>
-      <div class="control-group">
-        <label>🔊 Volume: <span id="volVal">1.0</span></label>
-        <input type="range" id="volSlider" min="0.5" max="1" step="0.05" value="1">
-        <div class="range-labels"><span>basso</span><span>alto</span></div>
+      <div class="ctrl-group">
+        <span class="ctrl-label">🐢 Velocità: <span id="rateVal">0.85</span>×</span>
+        <input type="range" id="rateSlider" min="0.5" max="1.4" step="0.05" value="0.85"
+               oninput="document.getElementById('rateVal').textContent=parseFloat(this.value).toFixed(2)">
+        <div class="range-ends"><span>lento</span><span>normale</span></div>
       </div>
     </div>
 
-    <div class="btn-row">
-      <button id="playBtn" onclick="startReading()">▶ Leggi</button>
-      <button id="pauseBtn" onclick="togglePause()">⏸ Pausa</button>
-      <button id="stopBtn" onclick="stopReading()">■ Stop</button>
-      <button id="saveBtn" onclick="saveAsMP3()" disabled>💾 Salva MP3</button>
-    </div>
+    <!-- Generate -->
+    <button class="btn-primary" id="generateBtn" onclick="generateStory()">▶ Genera storia</button>
 
-    <div class="progress-wrap">
-      <div id="progressBar"></div>
-    </div>
-    <div id="status">Pronto per raccontare una storia ✨</div>
+    <!-- Progress -->
+    <div class="progress-wrap"><div id="progressBar"></div></div>
+    <div id="status">Inserisci la chiave API nelle Impostazioni per iniziare ✨</div>
 
-    <a id="downloadLink" download="storia_buonanotte.webm">⬇ Scarica la registrazione</a>
+    <!-- Player -->
+    <audio id="audioPlayer" controls></audio>
 
-    <p class="save-note">
-      Il salvataggio usa la registrazione audio del microfono virtuale del browser (Web Audio).<br>
-      Per i migliori risultati: attendi che la storia finisca, poi scarica il file.
-    </p>
+    <!-- Download & save -->
+    <button class="btn-download" id="downloadBtn" onclick="downloadAudio()">⬇ Scarica file WAV sul telefono</button>
+    <button class="btn-save-lib" id="saveLibBtn" onclick="saveToLibrary()">📚 Salva nella Biblioteca</button>
+    <p class="save-note">I file scaricati finiscono nella cartella <strong>Download</strong> del telefono · La Biblioteca salva l'audio nell'app</p>
 
   </div>
-</div>
+
+  <!-- ══════════════ TAB: BIBLIOTECA ══════════════ -->
+  <div class="panel" id="panel-biblioteca">
+    <div class="card">
+      <div class="card-title">📚 Le tue storie</div>
+      <div id="libraryList">
+        <div class="lib-empty">
+          <div class="big">🌙</div>
+          <p>Nessuna storia salvata.<br>Crea una storia e premi<br>"Salva nella Biblioteca".</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════ TAB: IMPOSTAZIONI ══════════════ -->
+  <div class="panel" id="panel-impostazioni">
+
+    <!-- API Key -->
+    <div class="card">
+      <div class="card-title">🔑 Chiave API Gemini</div>
+      <div class="key-row">
+        <input type="password" id="apiKeyInput" placeholder="AIza…">
+        <button class="btn-sm btn-ghost" onclick="toggleKeyVis()" type="button">👁</button>
+        <button class="btn-sm btn-amber" onclick="saveKey()" type="button">Salva</button>
+      </div>
+      <div class="key-status" id="keyStatus">Nessuna chiave salvata.</div>
+
+      <div class="acc">
+        <button class="acc-head" onclick="toggleAcc(this)" type="button">
+          ℹ️ Come ottenere la chiave API (gratuita) <span>▼</span>
+        </button>
+        <div class="acc-body">
+          <ol>
+            <li>Vai su <a href="https://aistudio.google.com/apikey" target="_blank"><strong>aistudio.google.com/apikey</strong></a><br>(serve un account Google gratuito).</li>
+            <li>Clicca <strong>"Create API key"</strong>.</li>
+            <li>Copia la chiave generata — è una lunga stringa di caratteri.</li>
+            <li>Incollala qui sopra e premi <strong>Salva</strong>.</li>
+            <li>La chiave è salvata <strong>solo su questo telefono</strong>.</li>
+          </ol>
+          <p class="tip">💡 Per una fiaba il consumo è minimo — resti abbondantemente nel livello gratuito.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- TalkBack warning -->
+    <div class="warn-box">
+      <span class="warn-title">⛔ Attenzione — Samsung: voci aggiuntive</span>
+      Per aggiungere voci italiane, apri <strong>Impostazioni del telefono</strong> e cerca 🔍 <em>tekst naar spraak</em>.<br><br>
+      Appariranno due risultati. <strong>Non toccare il primo</strong> ("Accessibilità → TalkBack") — è per non vedenti e prende il controllo completo dello schermo, molto difficile da disattivare.<br>
+      Scegli sempre il <strong>secondo risultato</strong>: "Instellingen Tekst naar spraak".<br><br>
+      <em>Questa app usa Gemini AI, quindi le voci del telefono non vengono usate qui.</em>
+    </div>
+
+    <!-- Info gratis -->
+    <div class="info-box">
+      <span class="info-title">💰 Gratuito?</span>
+      Sì. Gemini API ha un livello gratuito generoso. Una fiaba di 500 parole costa circa 0,001 € — praticamente zero. Solo se generi centinaia di storie al giorno potresti avvicinarti ai limiti. Per uso personale è completamente gratuito.
+    </div>
+
+  </div>
+
+</div><!-- /app -->
 
 <script>
-  function toggleStemInfo(btn) {
-    const panel = btn.nextElementSibling;
-    const arrow = btn.querySelector('.arrow');
-    const open = panel.classList.toggle('open');
-    arrow.textContent = open ? '▲' : '▼';
-    if (open) btn.style.borderRadius = '8px 8px 0 0';
-    else btn.style.borderRadius = '8px';
+// ── Constants ────────────────────────────────────────────────────────
+const KEY_STORE = 'buonanotte_gemini_key';
+const LIB_STORE = 'buonanotte_library';
+
+// ── Init ─────────────────────────────────────────────────────────────
+window.addEventListener('load', () => {
+  loadKey();
+  renderLibrary();
+  updateStatus();
+});
+
+function updateStatus() {
+  const k = localStorage.getItem(KEY_STORE);
+  if (k) setStatus('Pronto ✨', '');
+}
+
+// ── Tabs ─────────────────────────────────────────────────────────────
+function switchTab(name) {
+  document.querySelectorAll('.tab').forEach((t, i) => {
+    const panels = ['crea','biblioteca','impostazioni'];
+    t.classList.toggle('active', panels[i] === name);
+  });
+  document.querySelectorAll('.panel').forEach(p => {
+    p.classList.toggle('active', p.id === 'panel-' + name);
+  });
+  if (name === 'biblioteca') renderLibrary();
+}
+
+// ── API Key ──────────────────────────────────────────────────────────
+function loadKey() {
+  const k = localStorage.getItem(KEY_STORE);
+  if (k) {
+    document.getElementById('apiKeyInput').value = k;
+    setKeyStatus('✅ Chiave salvata sul dispositivo.', 'ok');
+  }
+}
+
+function saveKey() {
+  const k = document.getElementById('apiKeyInput').value.trim();
+  if (!k) { setKeyStatus('⚠️ Inserisci la chiave.', 'err'); return; }
+  if (k.length < 20) { setKeyStatus('⚠️ Chiave troppo corta — controlla di averla copiata completa.', 'err'); return; }
+  localStorage.setItem(KEY_STORE, k);
+  setKeyStatus('✅ Chiave salvata sul dispositivo.', 'ok');
+  setStatus('Pronto ✨', '');
+}
+
+function setKeyStatus(msg, cls) {
+  const el = document.getElementById('keyStatus');
+  el.textContent = msg;
+  el.className = 'key-status ' + (cls || '');
+}
+
+function toggleKeyVis() {
+  const inp = document.getElementById('apiKeyInput');
+  inp.type = inp.type === 'password' ? 'text' : 'password';
+}
+
+// ── Accordion ────────────────────────────────────────────────────────
+function toggleAcc(btn) {
+  const body = btn.nextElementSibling;
+  const arrow = btn.querySelector('span');
+  const open = body.classList.toggle('open');
+  arrow.textContent = open ? '▲' : '▼';
+}
+
+// ── Generate ─────────────────────────────────────────────────────────
+let audioBlob = null;
+let currentTitle = '';
+let progressTimer = null;
+
+async function generateStory() {
+  const apiKey = localStorage.getItem(KEY_STORE) ||
+                 document.getElementById('apiKeyInput').value.trim();
+  if (!apiKey) {
+    setStatus('⚠️ Inserisci prima la chiave API nella scheda Impostazioni.', 'error');
+    switchTab('impostazioni');
+    return;
   }
 
-  // ── Voice loading ──────────────────────────────────────────────────
-  const synth = window.speechSynthesis;
-  const voiceSelect = document.getElementById('voiceSelect');
-  let voices = [];
-  let italianVoices = [];
-  let currentUtterance = null;
-  let isPaused = false;
-  let wordSpans = [];
-  let wordIndex = 0;
+  const text = document.getElementById('storyText').value.trim();
+  if (!text) { setStatus('⚠️ Scrivi prima una storia!', 'error'); return; }
 
-  function loadVoices() {
-    voices = synth.getVoices();
-    italianVoices = voices.filter(v => v.lang.startsWith('it'));
-    
-    // fallback: any voice if no Italian found
-    const list = italianVoices.length > 0 ? italianVoices : voices;
+  currentTitle = document.getElementById('storyTitle').value.trim() ||
+                 text.substring(0, 40).replace(/\s+/g,' ') + '…';
 
-    voiceSelect.innerHTML = '';
-    list.forEach((v, i) => {
-      const opt = document.createElement('option');
-      opt.value = i;
-      opt.textContent = `${v.name} (${v.lang})`;
-      // Prefer female / Google voices for warm storytelling
-      if (v.name.toLowerCase().includes('female') ||
-          v.name.toLowerCase().includes('donna') ||
-          v.name.toLowerCase().includes('alice') ||
-          v.name.toLowerCase().includes('google')) {
-        opt.selected = true;
+  const voice = document.getElementById('voiceSelect').value;
+  const rate  = parseFloat(document.getElementById('rateSlider').value);
+
+  const btn = document.getElementById('generateBtn');
+  btn.disabled = true;
+  btn.textContent = '⏳ Generazione…';
+  document.getElementById('downloadBtn').style.display = 'none';
+  document.getElementById('saveLibBtn').style.display = 'none';
+  document.getElementById('audioPlayer').style.display = 'none';
+  audioBlob = null;
+
+  setStatus('Gemini AI sta preparando la storia…', 'active');
+  startProgress();
+
+  const systemPrompt = `Sei una narratrice di fiabe per bambini piccoli.
+Leggi in modo lento, caldo e rilassante — come una nonna che racconta la buonanotte.
+Fai piccole pause naturali tra le frasi. Voce dolce e avvolgente.`;
+
+  try {
+    const resp = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent?key=${apiKey}`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text }] }],
+          systemInstruction: { parts: [{ text: systemPrompt }] },
+          generationConfig: {
+            responseModalities: ['AUDIO'],
+            speechConfig: {
+              voiceConfig: { prebuiltVoiceConfig: { voiceName: voice } },
+              speakingRate: rate
+            }
+          }
+        })
       }
-      voiceSelect.appendChild(opt);
-    });
+    );
 
-    document.getElementById('saveBtn').disabled = false;
-  }
-
-  if (synth.onvoiceschanged !== undefined) {
-    synth.onvoiceschanged = loadVoices;
-  }
-  setTimeout(loadVoices, 300);
-
-  // ── Sliders ────────────────────────────────────────────────────────
-  document.getElementById('rateSlider').oninput = function() {
-    document.getElementById('rateVal').textContent = parseFloat(this.value).toFixed(2);
-  };
-  document.getElementById('pitchSlider').oninput = function() {
-    document.getElementById('pitchVal').textContent = parseFloat(this.value).toFixed(2);
-  };
-  document.getElementById('volSlider').oninput = function() {
-    document.getElementById('volVal').textContent = parseFloat(this.value).toFixed(1);
-  };
-
-  // ── Word-by-word display ───────────────────────────────────────────
-  function buildWordDisplay(text) {
-    const readDiv = document.getElementById('readText');
-    const words = text.split(/(\s+)/);
-    readDiv.innerHTML = '';
-    wordSpans = [];
-    let wIdx = 0;
-
-    words.forEach(part => {
-      if (/^\s+$/.test(part)) {
-        readDiv.appendChild(document.createTextNode(part));
-      } else if (part.length > 0) {
-        const span = document.createElement('span');
-        span.className = 'word';
-        span.textContent = part;
-        span.dataset.idx = wIdx++;
-        readDiv.appendChild(span);
-        wordSpans.push(span);
-      }
-    });
-    readDiv.style.display = 'block';
-  }
-
-  function highlightWord(idx) {
-    wordSpans.forEach((s, i) => {
-      s.classList.toggle('spoken', i === idx);
-    });
-    if (wordSpans[idx]) {
-      wordSpans[idx].scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    if (!resp.ok) {
+      const err = await resp.json().catch(() => ({}));
+      throw new Error(err?.error?.message || `Errore HTTP ${resp.status}`);
     }
+
+    const data = await resp.json();
+    const part  = data?.candidates?.[0]?.content?.parts?.[0];
+    const b64   = part?.inlineData?.data;
+    const mime  = part?.inlineData?.mimeType || 'audio/wav';
+
+    if (!b64) throw new Error('Nessun audio ricevuto da Gemini.');
+
+    stopProgress(100);
+
+    const bytes = Uint8Array.from(atob(b64), c => c.charCodeAt(0));
+    audioBlob = new Blob([bytes], { type: mime });
+
+    const url = URL.createObjectURL(audioBlob);
+    const player = document.getElementById('audioPlayer');
+    player.src = url;
+    player.style.display = 'block';
+    player.play().catch(() => {});
+
+    document.getElementById('downloadBtn').style.display = 'flex';
+    document.getElementById('saveLibBtn').style.display = 'flex';
+    setStatus('🌙 Storia pronta!', 'done');
+
+  } catch(e) {
+    stopProgress(0);
+    setStatus('❌ ' + e.message, 'error');
+    console.error(e);
   }
 
-  // ── TTS Reading ────────────────────────────────────────────────────
-  function startReading() {
-    if (isPaused && synth.speaking) { synth.resume(); isPaused = false; setStatus('Sto leggendo...', 'active'); return; }
-    synth.cancel();
-    isPaused = false;
+  btn.disabled = false;
+  btn.textContent = '▶ Genera storia';
+}
 
-    const text = document.getElementById('storyText').value.trim();
-    if (!text) { setStatus('Scrivi prima una storia!', 'error'); return; }
+// ── Download ─────────────────────────────────────────────────────────
+function downloadAudio() {
+  if (!audioBlob) return;
+  const url = URL.createObjectURL(audioBlob);
+  const a = document.createElement('a');
+  const safe = currentTitle.replace(/[^a-z0-9àèìòùáéíóú\s]/gi,'').trim().replace(/\s+/g,'_').substring(0,40);
+  const d = new Date();
+  const stamp = `${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}`;
+  a.href = url;
+  a.download = `${safe || 'storia'}_${stamp}.wav`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  setTimeout(() => URL.revokeObjectURL(url), 5000);
+}
 
-    // Hide input, show reading display
-    document.getElementById('storyText').style.display = 'none';
-    document.querySelector('label[for="storyText"]').style.display = 'none';
-    buildWordDisplay(text);
-    wordIndex = 0;
+// ── Library ───────────────────────────────────────────────────────────
+function getLibrary() {
+  try { return JSON.parse(localStorage.getItem(LIB_STORE) || '[]'); }
+  catch { return []; }
+}
 
-    const list = italianVoices.length > 0 ? italianVoices : voices;
-    const selIdx = parseInt(voiceSelect.value) || 0;
-    const voice = list[selIdx] || list[0];
+function saveLibrary(lib) {
+  localStorage.setItem(LIB_STORE, JSON.stringify(lib));
+}
 
-    const rate = parseFloat(document.getElementById('rateSlider').value);
-    const pitch = parseFloat(document.getElementById('pitchSlider').value);
-    const volume = parseFloat(document.getElementById('volSlider').value);
+async function saveToLibrary() {
+  if (!audioBlob) return;
+  const btn = document.getElementById('saveLibBtn');
+  btn.disabled = true;
+  btn.textContent = '⏳ Salvataggio…';
 
-    // Split into sentences for better boundary events
-    const sentences = text.match(/[^.!?…\n]+[.!?…\n]?/g) || [text];
-    let totalWords = text.split(/\s+/).length;
-    let spokenWords = 0;
-
-    sentences.forEach((sentence, si) => {
-      const utt = new SpeechSynthesisUtterance(sentence.trim());
-      utt.voice = voice;
-      utt.rate = rate;
-      utt.pitch = pitch;
-      utt.volume = volume;
-      utt.lang = 'it-IT';
-
-      utt.onboundary = (e) => {
-        if (e.name === 'word') {
-          highlightWord(wordIndex);
-          wordIndex++;
-          spokenWords++;
-          document.getElementById('progressBar').style.width =
-            Math.round((spokenWords / totalWords) * 100) + '%';
-        }
-      };
-
-      if (si === sentences.length - 1) {
-        utt.onend = () => {
-          document.getElementById('progressBar').style.width = '100%';
-          wordSpans.forEach(s => s.classList.remove('spoken'));
-          setStatus('Storia terminata 🌙 Sogni d\'oro!', 'done');
-          showTextarea();
-          stopRecording();
-        };
-      }
-
-      synth.speak(utt);
+  try {
+    const reader = new FileReader();
+    const b64 = await new Promise((res, rej) => {
+      reader.onload = () => res(reader.result);
+      reader.onerror = rej;
+      reader.readAsDataURL(audioBlob);
     });
 
-    setStatus('Sto leggendo...', 'active');
-    startRecording();
+    const lib = getLibrary();
+    const id = Date.now();
+    const d = new Date();
+    lib.unshift({
+      id,
+      title: currentTitle,
+      date: d.toLocaleDateString('it-IT'),
+      voice: document.getElementById('voiceSelect').value,
+      data: b64
+    });
+
+    // Keep max 20 stories
+    if (lib.length > 20) lib.splice(20);
+    saveLibrary(lib);
+
+    btn.textContent = '✅ Salvata!';
+    setTimeout(() => {
+      btn.disabled = false;
+      btn.textContent = '📚 Salva nella Biblioteca';
+    }, 2000);
+
+  } catch(e) {
+    btn.disabled = false;
+    btn.textContent = '📚 Salva nella Biblioteca';
+    setStatus('❌ Salvataggio fallito: ' + e.message, 'error');
+  }
+}
+
+function renderLibrary() {
+  const lib = getLibrary();
+  const container = document.getElementById('libraryList');
+
+  if (lib.length === 0) {
+    container.innerHTML = `<div class="lib-empty"><div class="big">🌙</div><p>Nessuna storia salvata.<br>Crea una storia e premi<br>"Salva nella Biblioteca".</p></div>`;
+    return;
   }
 
-  function togglePause() {
-    if (!synth.speaking) return;
-    if (isPaused) {
-      synth.resume();
-      isPaused = false;
-      setStatus('Sto leggendo...', 'active');
-    } else {
-      synth.pause();
-      isPaused = true;
-      setStatus('In pausa...', '');
-    }
+  container.innerHTML = lib.map(item => `
+    <div class="lib-item" id="libitem-${item.id}">
+      <div class="lib-item-top">
+        <div>
+          <div class="lib-item-title">${escHtml(item.title)}</div>
+          <div class="lib-item-meta">${item.date} · voce ${item.voice}</div>
+        </div>
+        <div class="lib-actions">
+          <button class="btn-sm btn-ghost" onclick="toggleLibPlayer(${item.id})" title="Ascolta">▶</button>
+          <button class="btn-sm btn-ghost" onclick="downloadLib(${item.id})" title="Scarica">⬇</button>
+          <button class="btn-sm btn-danger" onclick="deleteLib(${item.id})" title="Elimina">🗑</button>
+        </div>
+      </div>
+      <audio class="lib-player" id="libplayer-${item.id}" controls src="${item.data}"></audio>
+    </div>
+  `).join('');
+}
+
+function toggleLibPlayer(id) {
+  const player = document.getElementById(`libplayer-${id}`);
+  if (player.style.display === 'block') {
+    player.pause();
+    player.style.display = 'none';
+  } else {
+    player.style.display = 'block';
+    player.play().catch(() => {});
   }
+}
 
-  function stopReading() {
-    synth.cancel();
-    isPaused = false;
-    document.getElementById('progressBar').style.width = '0%';
-    wordSpans.forEach(s => s.classList.remove('spoken'));
-    setStatus('Fermato.', '');
-    showTextarea();
-    stopRecording();
-  }
+function downloadLib(id) {
+  const lib = getLibrary();
+  const item = lib.find(i => i.id === id);
+  if (!item) return;
+  const a = document.createElement('a');
+  a.href = item.data;
+  const safe = item.title.replace(/[^a-z0-9àèìòùáéíóú\s]/gi,'').trim().replace(/\s+/g,'_').substring(0,40);
+  a.download = `${safe || 'storia'}.wav`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+}
 
-  function showTextarea() {
-    document.getElementById('storyText').style.display = 'block';
-    document.querySelector('label[for="storyText"]').style.display = 'block';
-    document.getElementById('readText').style.display = 'none';
-  }
+function deleteLib(id) {
+  const lib = getLibrary().filter(i => i.id !== id);
+  saveLibrary(lib);
+  renderLibrary();
+}
 
-  function setStatus(msg, cls) {
-    const el = document.getElementById('status');
-    el.textContent = msg;
-    el.className = cls || '';
-  }
+function escHtml(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
 
-  // ── Recording (Web Audio → MediaRecorder) ─────────────────────────
-  let mediaRecorder = null;
-  let recordedChunks = [];
-  let audioCtx = null;
-  let destNode = null;
+// ── Status & progress ────────────────────────────────────────────────
+function setStatus(msg, cls) {
+  const el = document.getElementById('status');
+  el.textContent = msg;
+  el.className = cls || '';
+}
 
-  async function startRecording() {
-    recordedChunks = [];
-    document.getElementById('downloadLink').style.display = 'none';
+function startProgress() {
+  const bar = document.getElementById('progressBar');
+  bar.style.width = '0%';
+  let w = 0;
+  clearInterval(progressTimer);
+  progressTimer = setInterval(() => {
+    w = Math.min(w + Math.random() * 2, 88);
+    bar.style.width = w + '%';
+  }, 700);
+}
 
-    try {
-      // We capture the system audio output using a dummy oscillator trick
-      // via AudioContext destination → MediaStream
-      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-
-      // Create a MediaStreamDestination to capture audio
-      destNode = audioCtx.createMediaStreamDestination();
-
-      // Dummy silent oscillator to keep stream alive
-      const osc = audioCtx.createOscillator();
-      osc.frequency.value = 0;
-      osc.connect(destNode);
-      osc.start();
-
-      const stream = destNode.stream;
-
-      // Prefer webm/opus for broad support
-      const mimeType = MediaRecorder.isTypeSupported('audio/webm;codecs=opus')
-        ? 'audio/webm;codecs=opus'
-        : MediaRecorder.isTypeSupported('audio/webm')
-          ? 'audio/webm'
-          : 'audio/ogg';
-
-      mediaRecorder = new MediaRecorder(stream, { mimeType });
-      mediaRecorder.ondataavailable = e => {
-        if (e.data.size > 0) recordedChunks.push(e.data);
-      };
-      mediaRecorder.start(200);
-
-    } catch(e) {
-      console.log('Recording init failed:', e);
-      // Recording not available, but TTS still works fine
-    }
-  }
-
-  function stopRecording() {
-    if (!mediaRecorder || mediaRecorder.state === 'inactive') return;
-    mediaRecorder.stop();
-    mediaRecorder.onstop = () => {
-      if (recordedChunks.length === 0) return;
-      const blob = new Blob(recordedChunks, { type: mediaRecorder.mimeType });
-      const url = URL.createObjectURL(blob);
-      const link = document.getElementById('downloadLink');
-      link.href = url;
-
-      // Suggest filename with date
-      const d = new Date();
-      const stamp = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
-      link.download = `storia_buonanotte_${stamp}.webm`;
-      link.textContent = '⬇ Scarica la registrazione (WebM)';
-      link.style.display = 'block';
-    };
-    if (audioCtx) { audioCtx.close(); audioCtx = null; }
-  }
-
-  // ── Save button ────────────────────────────────────────────────────
-  function saveAsMP3() {
-    // Inform user about the recording approach
-    const msg = `🎙️ Come salvare la storia come file audio:
-
-METODO 1 — Registrazione dello schermo (più semplice):
-• Su Android: usa la funzione "Registrazione schermo" e attiva l'audio
-• Poi taglia solo la parte audio con un'app come Audacity o online
-
-METODO 2 — App come "Internal Audio Recorder" (Android):
-• Installa un'app di registrazione audio interna
-• Avvia la registrazione, poi premi ▶ Leggi
-
-METODO 3 — PC con OBS o Audacity:
-• Apri questa pagina sul computer
-• Registra l'audio dell'altoparlante con Audacity (stereo mix)
-
-Il download WebM apparirà automaticamente al termine della storia.`;
-    alert(msg);
-  }
+function stopProgress(target) {
+  clearInterval(progressTimer);
+  document.getElementById('progressBar').style.width = target + '%';
+}
 </script>
 </body>
 </html>

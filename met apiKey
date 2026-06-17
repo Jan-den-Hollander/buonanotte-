@@ -449,6 +449,15 @@
       </ol>
     </div>
 
+    <!-- TALKBACK WARNING -->
+    <div class="istruzioni" style="border-color:rgba(200,80,40,0.3); background:rgba(120,40,20,0.08);">
+      <span class="box-title" style="color:#c05030;">⚠️ Attenzione — Samsung: voci aggiuntive</span>
+      Per installare voci italiane extra, vai in:<br>
+      <strong>Impostazioni → Gestione generale → Lingua → Sintesi vocale</strong><br><br>
+      <strong style="color:#c05030;">Non toccare TalkBack</strong> — è una funzione per non vedenti che prende il controllo completo dello schermo ed è difficile da disattivare. Cerca solo <em>Sintesi vocale</em> o <em>Text-to-Speech</em>.<br><br>
+      Su altri Android: <strong>Impostazioni → Accessibilità → Sintesi vocale</strong> (questa app usa Gemini AI, quindi le voci del telefono non vengono usate qui).
+    </div>
+
     <!-- STORY INPUT -->
     <label for="storyText">✍️ La tua storia</label>
     <textarea id="storyText">Pippo camminava nel giardino e si annoiava tanto. Ma guarda! Cosa vide lì? Un piccolo buchino nella siepe.
@@ -677,4 +686,3 @@ loadKey();
 </script>
 </body>
 </html>
-

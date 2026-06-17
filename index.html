@@ -806,7 +806,7 @@ async function generateStory() {
   startProgress();
 
   const systemPrompt = `Sei una narratrice di fiabe per bambini piccoli.
-Leggi in modo lento, caldo e rilassante — come una nonna che racconta la buonanotte.
+Leggi in modo ${rate < 0.75 ? 'molto lento' : rate < 0.95 ? 'lento' : 'normale'}, caldo e rilassante — come una nonna che racconta la buonanotte.
 Fai piccole pause naturali tra le frasi. Voce dolce e avvolgente.`;
 
   try {
@@ -821,8 +821,9 @@ Fai piccole pause naturali tra le frasi. Voce dolce e avvolgente.`;
           generationConfig: {
             responseModalities: ['AUDIO'],
             speechConfig: {
-              voiceConfig: { prebuiltVoiceConfig: { voiceName: voice } },
-              speakingRate: rate
+              voiceConfig: {
+                prebuiltVoiceConfig: { voiceName: voice }
+              }
             }
           }
         })

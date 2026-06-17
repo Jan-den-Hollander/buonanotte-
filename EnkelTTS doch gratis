@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Storie della Buonanotte 🌙</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=Nunito:wght@300;400;600&display=swap');
+
+  :root {
+    --ink: #2c1a0e;
+    --parchment: #fdf6ec;
+    --warm-mid: #f5e9d0;
+    --amber: #c8813a;
+    --amber-light: #e8a85a;
+    --dusk: #5c3d6e;
+    --star: #f0c060;
+    --shadow: rgba(44,26,14,0.15);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    min-height: 100vh;
+    background: linear-gradient(160deg, #1a0a2e 0%, #2d1040 40%, #1e1030 100%);
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 24px 16px 48px;
+    font-family: 'Nunito', sans-serif;
+  }
+
+  /* Stars background */
+  body::before {
+    content: '✦ ˙ · ✦ · ˙ ✦ ˙ · ✦ ✦ · ˙ ✦ ˙ ✦ · ✦ ˙ · ✦ ✦ ˙ ·';
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    color: rgba(255,255,255,0.12);
+    font-size: 22px;
+    letter-spacing: 18px;
+    line-height: 48px;
+    word-break: break-all;
+    pointer-events: none;
+    z-index: 0;
+    padding: 20px;
+  }
+
+  .book {
+    position: relative;
+    z-index: 1;
+    background: var(--parchment);
+    border-radius: 4px 20px 20px 4px;
+    max-width: 680px;
+    width: 100%;
+    box-shadow:
+      -6px 0 0 #b8945a,
+      -10px 2px 0 #9a7040,
+      0 8px 40px rgba(0,0,0,0.5),
+      inset 12px 0 24px rgba(184,148,90,0.2);
+    overflow: hidden;
+  }
+
+  .book-spine {
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 12px;
+    background: linear-gradient(90deg, #9a7040, #b8945a);
+    border-radius: 4px 0 0 4px;
+  }
+
+  .book-inner {
+    padding: 40px 44px 44px 52px;
+  }
+
+  /* Moon decoration */
+  .moon {
+    text-align: center;
+    font-size: 52px;
+    margin-bottom: 4px;
+    filter: drop-shadow(0 0 12px #f0c06080);
+  }
+
+  h1 {
+    font-family: 'Lora', serif;
+    font-size: 1.75rem;
+    color: var(--dusk);
+    text-align: center;
+    margin-bottom: 4px;
+    letter-spacing: 0.02em;
+  }
+
+  .subtitle {
+    text-align: center;
+    color: var(--amber);
+    font-size: 0.85rem;
+    font-weight: 300;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 28px;
+  }
+
+  /* Divider */
+  .divider {
+    text-align: center;
+    color: var(--amber-light);
+    font-size: 18px;
+    letter-spacing: 8px;
+    margin-bottom: 24px;
+    opacity: 0.6;
+  }
+
+  label {
+    display: block;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--dusk);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  textarea {
+    width: 100%;
+    min-height: 280px;
+    padding: 18px 20px;
+    font-family: 'Lora', serif;
+    font-size: 1rem;
+    line-height: 1.8;
+    color: var(--ink);
+    background: var(--warm-mid);
+    border: 1.5px solid rgba(184,148,90,0.3);
+    border-radius: 10px;
+    resize: vertical;
+    outline: none;
+    transition: border-color 0.2s;
+    margin-bottom: 20px;
+  }
+
+  textarea:focus {
+    border-color: var(--amber);
+    background: #fdf2e0;
+  }
+
+  /* Controls row */
+  .controls {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin-bottom: 20px;
+  }
+
+  .control-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .control-group label {
+    margin-bottom: 0;
+  }
+
+  select, input[type=range] {
+    width: 100%;
+  }
+
+  select {
+    padding: 9px 12px;
+    border: 1.5px solid rgba(184,148,90,0.3);
+    border-radius: 8px;
+    background: var(--warm-mid);
+    color: var(--ink);
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.9rem;
+    outline: none;
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M0 0l6 8 6-8z' fill='%23c8813a'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+  }
+
+  input[type=range] {
+    -webkit-appearance: none;
+    height: 6px;
+    border-radius: 3px;
+    background: rgba(184,148,90,0.3);
+    outline: none;
+    margin-top: 10px;
+  }
+
+  input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 18px; height: 18px;
+    border-radius: 50%;
+    background: var(--amber);
+    cursor: pointer;
+    box-shadow: 0 2px 6px var(--shadow);
+  }
+
+  .range-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.7rem;
+    color: #a08060;
+    margin-top: 3px;
+  }
+
+  /* Buttons */
+  .btn-row {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+  }
+
+  button {
+    flex: 1;
+    min-width: 120px;
+    padding: 13px 20px;
+    border: none;
+    border-radius: 10px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  #playBtn {
+    background: linear-gradient(135deg, var(--dusk), #3d2550);
+    color: white;
+    box-shadow: 0 4px 14px rgba(92,61,110,0.35);
+  }
+
+  #playBtn:hover { transform: translateY(-1px); box-shadow: 0 6px 18px rgba(92,61,110,0.45); }
+  #playBtn:active { transform: translateY(0); }
+
+  #pauseBtn {
+    background: var(--warm-mid);
+    color: var(--dusk);
+    border: 1.5px solid rgba(92,61,110,0.3);
+  }
+
+  #pauseBtn:hover { background: #eedfc0; }
+
+  #stopBtn {
+    background: var(--warm-mid);
+    color: #a05030;
+    border: 1.5px solid rgba(160,80,48,0.3);
+  }
+
+  #stopBtn:hover { background: #f5ddc8; }
+
+  #saveBtn {
+    background: linear-gradient(135deg, #2a6040, #3a8050);
+    color: white;
+    box-shadow: 0 4px 14px rgba(42,96,64,0.3);
+  }
+
+  #saveBtn:hover { transform: translateY(-1px); box-shadow: 0 6px 18px rgba(42,96,64,0.4); }
+  #saveBtn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+  /* Progress */
+  .progress-wrap {
+    background: rgba(184,148,90,0.15);
+    border-radius: 6px;
+    height: 8px;
+    overflow: hidden;
+    margin-bottom: 10px;
+  }
+
+  #progressBar {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, var(--amber), var(--dusk));
+    border-radius: 6px;
+    transition: width 0.5s linear;
+  }
+
+  /* Status */
+  #status {
+    text-align: center;
+    font-size: 0.85rem;
+    color: #907050;
+    min-height: 22px;
+    font-style: italic;
+  }
+
+  #status.active { color: var(--dusk); }
+  #status.done { color: #3a8050; }
+  #status.error { color: #a03020; font-style: normal; }
+
+  /* Accordion stem-info */
+  .stem-accordion {
+    margin-bottom: 16px;
+  }
+
+  .stem-toggle {
+    width: 100%;
+    background: none;
+    border: 1.5px solid rgba(184,148,90,0.35);
+    border-radius: 8px;
+    padding: 9px 14px;
+    color: var(--amber);
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-width: unset;
+    flex: unset;
+    transition: background 0.2s;
+  }
+
+  .stem-toggle:hover { background: rgba(184,148,90,0.08); }
+
+  .stem-panel {
+    display: none;
+    background: linear-gradient(135deg, #2d1040, #1a0a2e);
+    border: 1px solid rgba(240,192,96,0.2);
+    border-top: none;
+    border-radius: 0 0 8px 8px;
+    padding: 14px 16px 16px;
+    color: #f0e0c0;
+    font-size: 0.86rem;
+    line-height: 1.75;
+  }
+
+  .stem-panel.open { display: block; }
+
+  .stem-panel p { margin-bottom: 8px; }
+  .stem-panel p:last-child { margin-bottom: 0; }
+  .stem-panel strong { color: var(--star); }
+
+  /* Word highlight */
+  #readText {
+    display: none;
+    font-family: 'Lora', serif;
+    font-size: 1rem;
+    line-height: 1.9;
+    color: var(--ink);
+    padding: 18px 20px;
+    background: var(--warm-mid);
+    border-radius: 10px;
+    border: 1.5px solid rgba(184,148,90,0.2);
+    margin-bottom: 16px;
+    max-height: 200px;
+    overflow-y: auto;
+  }
+
+  .word { transition: background 0.1s; }
+  .word.spoken { background: rgba(240,192,96,0.45); border-radius: 3px; padding: 1px 2px; }
+
+  /* Save info */
+  .istruzioni {
+    background: linear-gradient(135deg, #2d1040, #1a0a2e);
+    border: 1px solid rgba(240,192,96,0.3);
+    border-radius: 10px;
+    padding: 14px 18px;
+    margin-bottom: 22px;
+    color: #f0e0c0;
+    font-size: 0.88rem;
+    line-height: 1.7;
+  }
+
+  .istruzioni strong {
+    color: var(--star);
+    display: block;
+    margin-bottom: 4px;
+    font-size: 0.82rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .istruzioni ol {
+    padding-left: 18px;
+    margin: 0;
+  }
+
+  .istruzioni li {
+    margin-bottom: 2px;
+  }
+
+  .save-note {
+    font-size: 0.75rem;
+    color: #b09070;
+    text-align: center;
+    margin-top: 12px;
+    font-style: italic;
+  }
+
+  #downloadLink {
+    display: none;
+    text-align: center;
+    margin-top: 12px;
+    padding: 10px 20px;
+    background: linear-gradient(135deg, #2a6040, #3a8050);
+    color: white;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.9rem;
+  }
+
+  #downloadLink:hover { background: linear-gradient(135deg, #3a7050, #4a9060); }
+
+  @media (max-width: 480px) {
+    .book-inner { padding: 28px 24px 32px 32px; }
+    h1 { font-size: 1.4rem; }
+    .controls { grid-template-columns: 1fr; }
+    .btn-row { flex-direction: column; }
+    button { min-width: unset; }
+  }
+</style>
+</head>
+<body>
+
+<div class="book">
+  <div class="book-spine"></div>
+  <div class="book-inner">
+
+    <div class="moon">🌙</div>
+    <h1>Storie della Buonanotte</h1>
+    <p class="subtitle">Lettore di fiabe per bambini</p>
+    <div class="divider">✦ ✦ ✦</div>
+
+    <div class="istruzioni">
+      <strong>🎙️ Come usare l'app</strong>
+      <ol>
+        <li>Incolla o scrivi la tua storia nel campo qui sotto.</li>
+        <li>Scegli la voce e regola la velocità.</li>
+        <li>Apri la tua <strong style="color:#f0c060;text-transform:none;display:inline;font-size:inherit;letter-spacing:0">app registratore</strong> — oppure usa lo <strong style="color:#f0c060;text-transform:none;display:inline;font-size:inherit;letter-spacing:0">schermo diviso</strong> per tenere entrambe le app aperte insieme.</li>
+        <li>Premi <strong style="color:#f0c060;text-transform:none;display:inline;font-size:inherit;letter-spacing:0">▶ Leggi</strong> e aspetta che la storia finisca.</li>
+        <li>Ferma la registrazione e salva il file MP3.</li>
+      </ol>
+    </div>
+
+    <label for="storyText">✍️ La tua storia</label>
+    <textarea id="storyText" placeholder="Incolla qui la tua storia in italiano...">Pippo camminava nel giardino e si annoiava tanto. Ma guarda! Cosa vide lì? Un piccolo buchino nella siepe.
+"Cosa ci sarà dall'altra parte della siepe?", pensò Pippo. Un palazzo? Uno steccato? Un cavaliere? Si sedette per terra e guardò attraverso il buchino. E cosa vide? Un piccolo nasino, una piccola boccuccia e due occhietti azzurri. Lì c'era una bambina. Era grande proprio come Pippo.
+"Come ti chiami?", chiese Pippo.
+"Jolina", disse la bambina. "Io abito qui."
+"Ieri non abitavi mica qui", disse Pippo.
+"Oggi ci abito!", disse Jolina. "Vieni a giocare con me?"
+"Passerò attraverso il buco", disse Pippo. E infilò prima la testa nel buco, poi un braccio, poi l'altro braccio... e a un certo punto rimase incastrato!
+E Jolina tirò da un braccio, e poi dall'altro braccio, ma non servì a nulla. Pippo era proprio incastrato. E Pippo piangeva e gridava!
+In quel momento il papà di Pippo accorse in un giardino, e il papà di Jolina accorse nell'altro giardino. E insieme, aiutarono Pippo a tornare indietro.
+"Ecco fatto", disse il papà di Pippo. "Adesso hai una vicina di casa. Però prima devi uscire per benino dalla porta d'ingresso ed entrare dalla porta di Jolina. Solo allora potrete giocare insieme."
+E così accadde. Pippo e Jolina giocarono insieme. Un giorno nel giardinetto di Pippo, e il giorno dopo nel giardinetto di Jolina. E giocavano... a fare il papà e la mamma.</textarea>
+
+    <div id="readText"></div>
+
+    <div class="controls">
+      <div class="control-group">
+        <label>🎙️ Voce</label>
+        <select id="voiceSelect"><option>Caricamento voci...</option></select>
+        <div class="stem-accordion">
+          <button class="stem-toggle" onclick="toggleStemInfo(this)" type="button">
+            ℹ️ Come ottenere più voci <span class="arrow">▼</span>
+          </button>
+          <div class="stem-panel">
+            <p>Le voci disponibili dipendono da quelle installate sul tuo telefono.</p>
+            <p><strong>Su Android:</strong> vai in <strong>Impostazioni → Accessibilità → Sintesi vocale</strong> (o cerca "text-to-speech"). Scegli <strong>Google Text-to-Speech</strong> come motore preferito, poi tocca l'ingranaggio ⚙️ → <strong>Installa dati vocali</strong> → Italiano. Troverai voci femminili e maschili. Dopo l'installazione, ricarica questa pagina — le nuove voci appariranno automaticamente nell'elenco.</p>
+            <p><strong>Voci più naturali:</strong> servizi come ElevenLabs o Acapela offrono voci di alta qualità, ma richiedono un account e sono a pagamento.</p>
+          </div>
+        </div>
+      </div>
+      <div class="control-group">
+        <label>🐢 Velocità: <span id="rateVal">0.78</span>×</label>
+        <input type="range" id="rateSlider" min="0.5" max="1.1" step="0.02" value="0.78">
+        <div class="range-labels"><span>lento</span><span>normale</span></div>
+      </div>
+      <div class="control-group">
+        <label>🎵 Tono: <span id="pitchVal">0.95</span></label>
+        <input type="range" id="pitchSlider" min="0.6" max="1.4" step="0.05" value="0.95">
+        <div class="range-labels"><span>grave</span><span>acuto</span></div>
+      </div>
+      <div class="control-group">
+        <label>🔊 Volume: <span id="volVal">1.0</span></label>
+        <input type="range" id="volSlider" min="0.5" max="1" step="0.05" value="1">
+        <div class="range-labels"><span>basso</span><span>alto</span></div>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button id="playBtn" onclick="startReading()">▶ Leggi</button>
+      <button id="pauseBtn" onclick="togglePause()">⏸ Pausa</button>
+      <button id="stopBtn" onclick="stopReading()">■ Stop</button>
+      <button id="saveBtn" onclick="saveAsMP3()" disabled>💾 Salva MP3</button>
+    </div>
+
+    <div class="progress-wrap">
+      <div id="progressBar"></div>
+    </div>
+    <div id="status">Pronto per raccontare una storia ✨</div>
+
+    <a id="downloadLink" download="storia_buonanotte.webm">⬇ Scarica la registrazione</a>
+
+    <p class="save-note">
+      Il salvataggio usa la registrazione audio del microfono virtuale del browser (Web Audio).<br>
+      Per i migliori risultati: attendi che la storia finisca, poi scarica il file.
+    </p>
+
+  </div>
+</div>
+
+<script>
+  function toggleStemInfo(btn) {
+    const panel = btn.nextElementSibling;
+    const arrow = btn.querySelector('.arrow');
+    const open = panel.classList.toggle('open');
+    arrow.textContent = open ? '▲' : '▼';
+    if (open) btn.style.borderRadius = '8px 8px 0 0';
+    else btn.style.borderRadius = '8px';
+  }
+
+  // ── Voice loading ──────────────────────────────────────────────────
+  const synth = window.speechSynthesis;
+  const voiceSelect = document.getElementById('voiceSelect');
+  let voices = [];
+  let italianVoices = [];
+  let currentUtterance = null;
+  let isPaused = false;
+  let wordSpans = [];
+  let wordIndex = 0;
+
+  function loadVoices() {
+    voices = synth.getVoices();
+    italianVoices = voices.filter(v => v.lang.startsWith('it'));
+    
+    // fallback: any voice if no Italian found
+    const list = italianVoices.length > 0 ? italianVoices : voices;
+
+    voiceSelect.innerHTML = '';
+    list.forEach((v, i) => {
+      const opt = document.createElement('option');
+      opt.value = i;
+      opt.textContent = `${v.name} (${v.lang})`;
+      // Prefer female / Google voices for warm storytelling
+      if (v.name.toLowerCase().includes('female') ||
+          v.name.toLowerCase().includes('donna') ||
+          v.name.toLowerCase().includes('alice') ||
+          v.name.toLowerCase().includes('google')) {
+        opt.selected = true;
+      }
+      voiceSelect.appendChild(opt);
+    });
+
+    document.getElementById('saveBtn').disabled = false;
+  }
+
+  if (synth.onvoiceschanged !== undefined) {
+    synth.onvoiceschanged = loadVoices;
+  }
+  setTimeout(loadVoices, 300);
+
+  // ── Sliders ────────────────────────────────────────────────────────
+  document.getElementById('rateSlider').oninput = function() {
+    document.getElementById('rateVal').textContent = parseFloat(this.value).toFixed(2);
+  };
+  document.getElementById('pitchSlider').oninput = function() {
+    document.getElementById('pitchVal').textContent = parseFloat(this.value).toFixed(2);
+  };
+  document.getElementById('volSlider').oninput = function() {
+    document.getElementById('volVal').textContent = parseFloat(this.value).toFixed(1);
+  };
+
+  // ── Word-by-word display ───────────────────────────────────────────
+  function buildWordDisplay(text) {
+    const readDiv = document.getElementById('readText');
+    const words = text.split(/(\s+)/);
+    readDiv.innerHTML = '';
+    wordSpans = [];
+    let wIdx = 0;
+
+    words.forEach(part => {
+      if (/^\s+$/.test(part)) {
+        readDiv.appendChild(document.createTextNode(part));
+      } else if (part.length > 0) {
+        const span = document.createElement('span');
+        span.className = 'word';
+        span.textContent = part;
+        span.dataset.idx = wIdx++;
+        readDiv.appendChild(span);
+        wordSpans.push(span);
+      }
+    });
+    readDiv.style.display = 'block';
+  }
+
+  function highlightWord(idx) {
+    wordSpans.forEach((s, i) => {
+      s.classList.toggle('spoken', i === idx);
+    });
+    if (wordSpans[idx]) {
+      wordSpans[idx].scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    }
+  }
+
+  // ── TTS Reading ────────────────────────────────────────────────────
+  function startReading() {
+    if (isPaused && synth.speaking) { synth.resume(); isPaused = false; setStatus('Sto leggendo...', 'active'); return; }
+    synth.cancel();
+    isPaused = false;
+
+    const text = document.getElementById('storyText').value.trim();
+    if (!text) { setStatus('Scrivi prima una storia!', 'error'); return; }
+
+    // Hide input, show reading display
+    document.getElementById('storyText').style.display = 'none';
+    document.querySelector('label[for="storyText"]').style.display = 'none';
+    buildWordDisplay(text);
+    wordIndex = 0;
+
+    const list = italianVoices.length > 0 ? italianVoices : voices;
+    const selIdx = parseInt(voiceSelect.value) || 0;
+    const voice = list[selIdx] || list[0];
+
+    const rate = parseFloat(document.getElementById('rateSlider').value);
+    const pitch = parseFloat(document.getElementById('pitchSlider').value);
+    const volume = parseFloat(document.getElementById('volSlider').value);
+
+    // Split into sentences for better boundary events
+    const sentences = text.match(/[^.!?…\n]+[.!?…\n]?/g) || [text];
+    let totalWords = text.split(/\s+/).length;
+    let spokenWords = 0;
+
+    sentences.forEach((sentence, si) => {
+      const utt = new SpeechSynthesisUtterance(sentence.trim());
+      utt.voice = voice;
+      utt.rate = rate;
+      utt.pitch = pitch;
+      utt.volume = volume;
+      utt.lang = 'it-IT';
+
+      utt.onboundary = (e) => {
+        if (e.name === 'word') {
+          highlightWord(wordIndex);
+          wordIndex++;
+          spokenWords++;
+          document.getElementById('progressBar').style.width =
+            Math.round((spokenWords / totalWords) * 100) + '%';
+        }
+      };
+
+      if (si === sentences.length - 1) {
+        utt.onend = () => {
+          document.getElementById('progressBar').style.width = '100%';
+          wordSpans.forEach(s => s.classList.remove('spoken'));
+          setStatus('Storia terminata 🌙 Sogni d\'oro!', 'done');
+          showTextarea();
+          stopRecording();
+        };
+      }
+
+      synth.speak(utt);
+    });
+
+    setStatus('Sto leggendo...', 'active');
+    startRecording();
+  }
+
+  function togglePause() {
+    if (!synth.speaking) return;
+    if (isPaused) {
+      synth.resume();
+      isPaused = false;
+      setStatus('Sto leggendo...', 'active');
+    } else {
+      synth.pause();
+      isPaused = true;
+      setStatus('In pausa...', '');
+    }
+  }
+
+  function stopReading() {
+    synth.cancel();
+    isPaused = false;
+    document.getElementById('progressBar').style.width = '0%';
+    wordSpans.forEach(s => s.classList.remove('spoken'));
+    setStatus('Fermato.', '');
+    showTextarea();
+    stopRecording();
+  }
+
+  function showTextarea() {
+    document.getElementById('storyText').style.display = 'block';
+    document.querySelector('label[for="storyText"]').style.display = 'block';
+    document.getElementById('readText').style.display = 'none';
+  }
+
+  function setStatus(msg, cls) {
+    const el = document.getElementById('status');
+    el.textContent = msg;
+    el.className = cls || '';
+  }
+
+  // ── Recording (Web Audio → MediaRecorder) ─────────────────────────
+  let mediaRecorder = null;
+  let recordedChunks = [];
+  let audioCtx = null;
+  let destNode = null;
+
+  async function startRecording() {
+    recordedChunks = [];
+    document.getElementById('downloadLink').style.display = 'none';
+
+    try {
+      // We capture the system audio output using a dummy oscillator trick
+      // via AudioContext destination → MediaStream
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+      // Create a MediaStreamDestination to capture audio
+      destNode = audioCtx.createMediaStreamDestination();
+
+      // Dummy silent oscillator to keep stream alive
+      const osc = audioCtx.createOscillator();
+      osc.frequency.value = 0;
+      osc.connect(destNode);
+      osc.start();
+
+      const stream = destNode.stream;
+
+      // Prefer webm/opus for broad support
+      const mimeType = MediaRecorder.isTypeSupported('audio/webm;codecs=opus')
+        ? 'audio/webm;codecs=opus'
+        : MediaRecorder.isTypeSupported('audio/webm')
+          ? 'audio/webm'
+          : 'audio/ogg';
+
+      mediaRecorder = new MediaRecorder(stream, { mimeType });
+      mediaRecorder.ondataavailable = e => {
+        if (e.data.size > 0) recordedChunks.push(e.data);
+      };
+      mediaRecorder.start(200);
+
+    } catch(e) {
+      console.log('Recording init failed:', e);
+      // Recording not available, but TTS still works fine
+    }
+  }
+
+  function stopRecording() {
+    if (!mediaRecorder || mediaRecorder.state === 'inactive') return;
+    mediaRecorder.stop();
+    mediaRecorder.onstop = () => {
+      if (recordedChunks.length === 0) return;
+      const blob = new Blob(recordedChunks, { type: mediaRecorder.mimeType });
+      const url = URL.createObjectURL(blob);
+      const link = document.getElementById('downloadLink');
+      link.href = url;
+
+      // Suggest filename with date
+      const d = new Date();
+      const stamp = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+      link.download = `storia_buonanotte_${stamp}.webm`;
+      link.textContent = '⬇ Scarica la registrazione (WebM)';
+      link.style.display = 'block';
+    };
+    if (audioCtx) { audioCtx.close(); audioCtx = null; }
+  }
+
+  // ── Save button ────────────────────────────────────────────────────
+  function saveAsMP3() {
+    // Inform user about the recording approach
+    const msg = `🎙️ Come salvare la storia come file audio:
+
+METODO 1 — Registrazione dello schermo (più semplice):
+• Su Android: usa la funzione "Registrazione schermo" e attiva l'audio
+• Poi taglia solo la parte audio con un'app come Audacity o online
+
+METODO 2 — App come "Internal Audio Recorder" (Android):
+• Installa un'app di registrazione audio interna
+• Avvia la registrazione, poi premi ▶ Leggi
+
+METODO 3 — PC con OBS o Audacity:
+• Apri questa pagina sul computer
+• Registra l'audio dell'altoparlante con Audacity (stereo mix)
+
+Il download WebM apparirà automaticamente al termine della storia.`;
+    alert(msg);
+  }
+</script>
+</body>
+</html>

@@ -805,9 +805,8 @@ async function generateStory() {
   setStatus('Gemini AI sta preparando la storia…', 'active');
   startProgress();
 
-  const systemPrompt = `Sei una narratrice di fiabe per bambini piccoli.
-Leggi in modo ${rate < 0.75 ? 'molto lento' : rate < 0.95 ? 'lento' : 'normale'}, caldo e rilassante — come una nonna che racconta la buonanotte.
-Fai piccole pause naturali tra le frasi. Voce dolce e avvolgente.`;
+  const stijl = rate < 0.75 ? 'molto lentamente, con lunghe pause,' : 'lentamente, con pause naturali,';
+  const fullText = `Leggi questa storia per bambini ${stijl} con voce calda e dolce:\n\n${text}`;
 
   try {
     const resp = await fetch(
@@ -816,8 +815,7 @@ Fai piccole pause naturali tra le frasi. Voce dolce e avvolgente.`;
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          contents: [{ parts: [{ text }] }],
-          systemInstruction: { parts: [{ text: systemPrompt }] },
+          contents: [{ parts: [{ text: fullText }] }],
           generationConfig: {
             responseModalities: ['AUDIO'],
             speechConfig: {

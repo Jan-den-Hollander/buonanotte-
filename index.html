@@ -637,9 +637,9 @@ E così accadde. Pippo e Jolina giocarono insieme. Un giorno nel giardinetto di 
     <audio id="audioPlayer" controls></audio>
 
     <!-- Download & save -->
-    <button class="btn-download" id="downloadBtn" onclick="downloadAudio()">⬇ Scarica file WAV sul telefono</button>
+    <button class="btn-download" id="downloadBtn" onclick="downloadAudio()">⬇ Scarica file MP3</button>
     <button class="btn-save-lib" id="saveLibBtn" onclick="saveToLibrary()">📚 Salva nella Biblioteca</button>
-    <p class="save-note">I file scaricati finiscono nella cartella <strong>Download</strong> del telefono · La Biblioteca salva l'audio nell'app</p>
+    <p class="save-note">I file MP3 vengono salvati nella cartella <strong>Download</strong> del telefono · La Biblioteca memorizza il testo per rigenerare l'audio</p>
 
   </div>
 
@@ -773,6 +773,7 @@ function toggleAcc(btn) {
 
 // ── Generate ─────────────────────────────────────────────────────────
 let audioBlob = null;
+let audioPcm = null;
 let currentTitle = '';
 let progressTimer = null;
 
@@ -842,8 +843,8 @@ async function generateStory() {
 
     stopProgress(100);
 
-    // Gemini TTS returns raw PCM (16-bit, 24kHz, mono) — build proper WAV
     const pcmBytes = Uint8Array.from(atob(b64), c => c.charCodeAt(0));
+    audioPcm = pcmBytes;
     const wavBytes = buildWav(pcmBytes, 24000, 1, 16);
     audioBlob = new Blob([wavBytes], { type: 'audio/wav' });
 
@@ -855,6 +856,7 @@ async function generateStory() {
     player.play().catch(() => {});
 
     document.getElementById('downloadBtn').style.display = 'flex';
+    document.getElementById('downloadBtn').textContent = '⬇ Scarica file MP3';
     document.getElementById('saveLibBtn').style.display = 'flex';
     setStatus('🌙 Storia pronta!', 'done');
 
@@ -868,7 +870,7 @@ async function generateStory() {
   btn.textContent = '▶ Genera storia';
 }
 
-// ── WAV builder ───────────────────────────────────────────────────────
+// ── WAV builder (voor intern afspelen) ───────────────────────────────
 function buildWav(pcmData, sampleRate, numChannels, bitsPerSample) {
   const dataLen = pcmData.length;
   const buffer = new ArrayBuffer(44 + dataLen);
@@ -879,7 +881,7 @@ function buildWav(pcmData, sampleRate, numChannels, bitsPerSample) {
   writeStr(8,  'WAVE');
   writeStr(12, 'fmt ');
   view.setUint32(16, 16, true);
-  view.setUint16(20, 1,  true);  // PCM
+  view.setUint16(20, 1,  true);
   view.setUint16(22, numChannels, true);
   view.setUint32(24, sampleRate, true);
   view.setUint32(28, sampleRate * numChannels * bitsPerSample / 8, true);
@@ -891,20 +893,77 @@ function buildWav(pcmData, sampleRate, numChannels, bitsPerSample) {
   return new Uint8Array(buffer);
 }
 
+// ── MP3 encoder via lamejs ────────────────────────────────────────────
+let lameLoaded = false;
+function loadLame() {
+  return new Promise((resolve) => {
+    if (lameLoaded) { resolve(); return; }
+    const s = document.createElement('script');
+    s.src = 'https://cdnjs.cloudflare.com/ajax/libs/lamejs/1.2.1/lame.min.js';
+    s.onload = () => { lameLoaded = true; resolve(); };
+    s.onerror = () => resolve(); // fallback to WAV if fails
+    document.head.appendChild(s);
+  });
+}
+
+async function pcmToMp3(pcmBytes, sampleRate) {
+  await loadLame();
+  if (typeof lamejs === 'undefined') return null;
+
+  // PCM is 16-bit signed little-endian — convert to Int16Array
+  const samples = new Int16Array(pcmBytes.buffer, pcmBytes.byteOffset, pcmBytes.byteLength / 2);
+  const mp3enc = new lamejs.Mp3Encoder(1, sampleRate, 128); // mono, 24kHz, 128kbps
+  const blockSize = 1152;
+  const mp3Data = [];
+
+  for (let i = 0; i < samples.length; i += blockSize) {
+    const chunk = samples.subarray(i, i + blockSize);
+    const mp3buf = mp3enc.encodeBuffer(chunk);
+    if (mp3buf.length > 0) mp3Data.push(new Uint8Array(mp3buf));
+  }
+  const final = mp3enc.flush();
+  if (final.length > 0) mp3Data.push(new Uint8Array(final));
+
+  const totalLen = mp3Data.reduce((s, a) => s + a.length, 0);
+  const out = new Uint8Array(totalLen);
+  let offset = 0;
+  for (const chunk of mp3Data) { out.set(chunk, offset); offset += chunk.length; }
+  return out;
+}
+
 // ── Download ─────────────────────────────────────────────────────────
-function downloadAudio() {
-  if (!audioBlob) return;
-  const url = URL.createObjectURL(audioBlob);
-  const a = document.createElement('a');
-  const safe = currentTitle.replace(/[^a-z0-9àèìòùáéíóú\s]/gi,'').trim().replace(/\s+/g,'_').substring(0,40);
-  const d = new Date();
-  const stamp = `${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}`;
-  a.href = url;
-  a.download = `${safe || 'storia'}_${stamp}.wav`;
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  setTimeout(() => URL.revokeObjectURL(url), 5000);
+async function downloadAudio() {
+  if (!audioPcm) return;
+  const btn = document.getElementById('downloadBtn');
+  btn.textContent = '⏳ Conversione MP3…';
+  btn.disabled = true;
+
+  try {
+    const mp3 = await pcmToMp3(audioPcm, 24000);
+    let blob, ext;
+    if (mp3) {
+      blob = new Blob([mp3], { type: 'audio/mpeg' });
+      ext = 'mp3';
+    } else {
+      // fallback WAV
+      blob = audioBlob;
+      ext = 'wav';
+    }
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    const safe = currentTitle.replace(/[^a-z0-9àèìòùáéíóú\s]/gi,'').trim().replace(/\s+/g,'_').substring(0,40);
+    const d = new Date();
+    const stamp = `${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}`;
+    a.href = url;
+    a.download = `${safe || 'storia'}_${stamp}.${ext}`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(url), 5000);
+  } finally {
+    btn.textContent = '⬇ Scarica file MP3';
+    btn.disabled = false;
+  }
 }
 
 // ── Library ───────────────────────────────────────────────────────────
@@ -918,19 +977,13 @@ function saveLibrary(lib) {
 }
 
 async function saveToLibrary() {
-  if (!audioBlob) return;
+  const text = document.getElementById('storyText').value.trim();
+  if (!text) return;
   const btn = document.getElementById('saveLibBtn');
   btn.disabled = true;
   btn.textContent = '⏳ Salvataggio…';
 
   try {
-    const reader = new FileReader();
-    const b64 = await new Promise((res, rej) => {
-      reader.onload = () => res(reader.result);
-      reader.onerror = rej;
-      reader.readAsDataURL(audioBlob);
-    });
-
     const lib = getLibrary();
     const id = Date.now();
     const d = new Date();
@@ -939,11 +992,10 @@ async function saveToLibrary() {
       title: currentTitle,
       date: d.toLocaleDateString('it-IT'),
       voice: document.getElementById('voiceSelect').value,
-      data: b64
+      rate:  document.getElementById('rateSlider').value,
+      text:  text
     });
-
-    // Keep max 20 stories
-    if (lib.length > 20) lib.splice(20);
+    if (lib.length > 30) lib.splice(30);
     saveLibrary(lib);
 
     btn.textContent = '✅ Salvata!';
@@ -973,44 +1025,113 @@ function renderLibrary() {
       <div class="lib-item-top">
         <div>
           <div class="lib-item-title">${escHtml(item.title)}</div>
-          <div class="lib-item-meta">${item.date} · voce ${item.voice}</div>
+          <div class="lib-item-meta">${item.date} · voce ${item.voice} · ${item.rate}×</div>
         </div>
         <div class="lib-actions">
-          <button class="btn-sm btn-ghost" onclick="toggleLibPlayer(${item.id})" title="Ascolta">▶</button>
-          <button class="btn-sm btn-ghost" onclick="downloadLib(${item.id})" title="Scarica">⬇</button>
+          <button class="btn-sm btn-ghost" onclick="playFromLib(${item.id})" title="Ascolta">▶</button>
+          <button class="btn-sm btn-ghost" onclick="loadInEditor(${item.id})" title="Modifica">✏️</button>
           <button class="btn-sm btn-danger" onclick="deleteLib(${item.id})" title="Elimina">🗑</button>
         </div>
       </div>
-      <audio class="lib-player" id="libplayer-${item.id}" controls src="${item.data}"></audio>
+      <div id="libstatus-${item.id}" style="font-size:0.8rem;color:#e8a85a;margin-top:6px;display:none;font-style:italic;"></div>
+      <audio class="lib-player" id="libplayer-${item.id}" controls style="display:none;width:100%;margin-top:8px;border-radius:6px;filter:invert(0.85) hue-rotate(180deg);"></audio>
     </div>
   `).join('');
 }
 
-function toggleLibPlayer(id) {
-  const player = document.getElementById(`libplayer-${id}`);
-  if (player.style.display === 'block') {
-    player.pause();
-    player.style.display = 'none';
-  } else {
-    player.style.display = 'block';
-    player.play().catch(() => {});
-  }
-}
-
-function downloadLib(id) {
+async function playFromLib(id) {
   const lib = getLibrary();
   const item = lib.find(i => i.id === id);
   if (!item) return;
-  const a = document.createElement('a');
-  a.href = item.data;
-  const safe = item.title.replace(/[^a-z0-9àèìòùáéíóú\s]/gi,'').trim().replace(/\s+/g,'_').substring(0,40);
-  a.download = `${safe || 'storia'}.wav`;
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
+
+  const player = document.getElementById(`libplayer-${id}`);
+  const statusEl = document.getElementById(`libstatus-${id}`);
+
+  // Toggle off if already playing
+  if (player.style.display === 'block') {
+    player.pause();
+    player.style.display = 'none';
+    statusEl.style.display = 'none';
+    return;
+  }
+
+  const apiKey = localStorage.getItem(KEY_STORE);
+  if (!apiKey) {
+    statusEl.textContent = '⚠️ Inserisci la chiave API nelle Impostazioni.';
+    statusEl.style.display = 'block';
+    return;
+  }
+
+  statusEl.textContent = '⏳ Gemini AI sta preparando l\'audio…';
+  statusEl.style.display = 'block';
+
+  try {
+    const stijl = parseFloat(item.rate) < 0.75 ? 'molto lentamente, con lunghe pause,' : 'lentamente, con pause naturali,';
+    const fullText = `Leggi questa storia per bambini ${stijl} con voce calda e dolce:\n\n${item.text}`;
+
+    const resp = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-tts-preview:generateContent?key=${apiKey}`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: fullText }] }],
+          generationConfig: {
+            responseModalities: ['AUDIO'],
+            speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: item.voice } } }
+          }
+        })
+      }
+    );
+
+    if (!resp.ok) {
+      const err = await resp.json().catch(() => ({}));
+      throw new Error(err?.error?.message || `HTTP ${resp.status}`);
+    }
+
+    const data = await resp.json();
+    const b64  = data?.candidates?.[0]?.content?.parts?.[0]?.inlineData?.data;
+    if (!b64) throw new Error('Nessun audio.');
+
+    const pcm = Uint8Array.from(atob(b64), c => c.charCodeAt(0));
+    const wav = buildWav(pcm, 24000, 1, 16);
+    const blob = new Blob([wav], { type: 'audio/wav' });
+    const url  = URL.createObjectURL(blob);
+
+    player.src = url;
+    player.style.display = 'block';
+    player.load();
+    player.play().catch(() => {});
+    statusEl.textContent = '🌙 In riproduzione…';
+
+    player.onended = () => {
+      statusEl.textContent = 'Sogni d\'oro! ✨';
+      setTimeout(() => { statusEl.style.display = 'none'; }, 3000);
+    };
+
+  } catch(e) {
+    statusEl.textContent = '❌ ' + e.message;
+  }
+}
+
+function loadInEditor(id) {
+  const lib = getLibrary();
+  const item = lib.find(i => i.id === id);
+  if (!item) return;
+  document.getElementById('storyTitle').value = item.title;
+  document.getElementById('storyText').value = item.text;
+  document.getElementById('voiceSelect').value = item.voice;
+  document.getElementById('rateSlider').value = item.rate;
+  document.getElementById('rateVal').textContent = parseFloat(item.rate).toFixed(2);
+  switchTab('crea');
+}
+
+function downloadLib(id) {
+  // kept for compatibility — not used in new UI
 }
 
 function deleteLib(id) {
+  if (!confirm('Eliminare questa storia?')) return;
   const lib = getLibrary().filter(i => i.id !== id);
   saveLibrary(lib);
   renderLibrary();

@@ -239,6 +239,92 @@ body {
 .acc-body .tip  { color: rgba(200,180,140,0.7); font-size: 0.78rem; margin-top: 8px; }
 
 /* Story textarea */
+.pdf-workflow-box {
+  background: rgba(92,61,110,0.12);
+  border: 1px solid rgba(92,61,110,0.3);
+  border-radius: 12px;
+  padding: 14px 16px;
+  margin-bottom: 16px;
+}
+
+.pdf-workflow-title {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--dusk2);
+  margin-bottom: 12px;
+}
+
+.pdf-steps { display: flex; flex-direction: column; gap: 8px; }
+
+.pdf-step {
+  font-size: 0.85rem;
+  color: rgba(220,200,240,0.85);
+  line-height: 1.6;
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+
+.pdf-num {
+  background: var(--dusk);
+  color: var(--star);
+  border-radius: 50%;
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 700;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.pdf-prompt {
+  background: rgba(0,0,0,0.3);
+  border: 1px solid rgba(240,192,96,0.25);
+  border-radius: 7px;
+  padding: 8px 12px;
+  font-family: 'Lora', serif;
+  font-size: 0.88rem;
+  color: var(--star);
+  cursor: pointer;
+  margin-top: 4px;
+  position: relative;
+  user-select: all;
+}
+
+.pdf-prompt:active { background: rgba(240,192,96,0.15); }
+
+.copy-hint {
+  display: block;
+  font-size: 0.68rem;
+  color: rgba(240,192,96,0.4);
+  font-family: 'Nunito', sans-serif;
+  margin-top: 4px;
+  font-style: italic;
+}
+
+.copy-hint.copied { color: #5cb87a; }
+
+.pdf-label {
+  display: block;
+  padding: 11px 16px;
+  background: rgba(255,255,255,0.06);
+  border: 1.5px dashed rgba(255,255,255,0.2);
+  border-radius: 9px;
+  color: rgba(240,224,192,0.6);
+  font-size: 0.88rem;
+  cursor: pointer;
+  text-align: center;
+  margin-bottom: 10px;
+  transition: all 0.2s;
+}
+.pdf-label:hover { background: rgba(255,255,255,0.1); border-color: var(--amber); color: var(--amber2); }
+.pdf-label.loaded { border-color: var(--green2); color: #5cb87a; border-style: solid; }
+
 .story-label {
   font-size: 0.72rem;
   font-weight: 700;
@@ -578,10 +664,10 @@ audio {
     <div class="info-box">
       <span class="info-title">📖 Come funziona</span>
       <ol style="padding-left:18px; margin:0;">
-        <li>Dai un titolo alla storia e incolla il testo.</li>
+        <li>Dai un titolo, incolla il testo <strong>oppure carica un PDF</strong>.</li>
         <li>Scegli la voce e la velocità.</li>
         <li>Premi <strong>▶ Genera storia</strong> — Gemini AI crea l'audio.</li>
-        <li>Ascolta l'anteprima, poi <strong>salva nella Biblioteca</strong> per riascoltarla in futuro, oppure <strong>scarica il file WAV</strong> sul telefono.</li>
+        <li>Ascolta l'anteprima, poi <strong>salva nella Biblioteca</strong> o <strong>scarica MP3</strong>.</li>
       </ol>
     </div>
 
@@ -589,9 +675,25 @@ audio {
     <span class="story-label">📌 Titolo della storia</span>
     <input type="text" class="story-title-input" id="storyTitle" placeholder="es. Pippo e il buchino nella siepe…">
 
+    <!-- PDF workflow -->
+    <div class="pdf-workflow-box">
+      <div class="pdf-workflow-title">📄 Testo da un PDF</div>
+      <div class="pdf-steps">
+        <div class="pdf-step"><span class="pdf-num">1</span> Trova il file PDF sul tuo telefono</div>
+        <div class="pdf-step"><span class="pdf-num">2</span> Tocca <strong>Condividi</strong> → scegli <strong>Gemini</strong></div>
+        <div class="pdf-step"><span class="pdf-num">3</span> Invia questo messaggio a Gemini:<br>
+          <div class="pdf-prompt" onclick="copyPrompt(this)">
+            <span>Estrai il testo del racconto in modo che io possa copiarlo e incollarlo.</span>
+            <span class="copy-hint">tocca per copiare</span>
+          </div>
+        </div>
+        <div class="pdf-step"><span class="pdf-num">4</span> Copia il testo che Gemini restituisce e incollalo nel campo qui sotto</div>
+      </div>
+    </div>
+
     <!-- Text -->
     <span class="story-label">✍️ Testo</span>
-    <textarea id="storyText" placeholder="Incolla qui la storia in italiano…">Pippo camminava nel giardino e si annoiava tanto. Ma guarda! Cosa vide lì? Un piccolo buchino nella siepe.
+    <textarea id="storyText" placeholder="Incolla qui la storia…">Pippo camminava nel giardino e si annoiava tanto. Ma guarda! Cosa vide lì? Un piccolo buchino nella siepe.
 "Cosa ci sarà dall'altra parte della siepe?", pensò Pippo. Un palazzo? Uno steccato? Un cavaliere? Si sedette per terra e guardò attraverso il buchino. E cosa vide? Un piccolo nasino, una piccola boccuccia e due occhietti azzurri. Lì c'era una bambina. Era grande proprio come Pippo.
 "Come ti chiami?", chiese Pippo.
 "Jolina", disse la bambina. "Io abito qui."
@@ -706,6 +808,26 @@ E così accadde. Pippo e Jolina giocarono insieme. Un giorno nel giardinetto di 
 </div><!-- /app -->
 
 <script>
+// ── Copy prompt ───────────────────────────────────────────────────────
+function copyPrompt(el) {
+  const text = el.querySelector('span:first-child').textContent;
+  const hint = el.querySelector('.copy-hint');
+  navigator.clipboard.writeText(text).then(() => {
+    hint.textContent = '✅ gekopieerd / copiato!';
+    hint.classList.add('copied');
+    setTimeout(() => {
+      hint.textContent = 'tikken om te kopiëren / tocca per copiare';
+      hint.classList.remove('copied');
+    }, 2500);
+  }).catch(() => {
+    // fallback for older browsers
+    const range = document.createRange();
+    range.selectNode(el.querySelector('span:first-child'));
+    window.getSelection().removeAllRanges();
+    window.getSelection().addRange(range);
+  });
+}
+
 // ── Constants ────────────────────────────────────────────────────────
 const KEY_STORE = 'buonanotte_gemini_key';
 const LIB_STORE = 'buonanotte_library';
@@ -801,51 +923,77 @@ async function generateStory() {
   document.getElementById('downloadBtn').style.display = 'none';
   document.getElementById('saveLibBtn').style.display = 'none';
   document.getElementById('audioPlayer').style.display = 'none';
-  audioBlob = null;
+  audioBlob = null; audioPcm = null;
 
-  setStatus('Gemini AI sta preparando la storia…', 'active');
+  // Split text into chunks of max 4000 chars on sentence boundaries
+  const chunks = splitIntoChunks(text, 4000);
+  const total = chunks.length;
+
+  setStatus(`Gemini AI sta preparando la storia… (1/${total})`, 'active');
   startProgress();
 
-  const stijl = rate < 0.75 ? 'molto lentamente, con lunghe pause,' : 'lentamente, con pause naturali,';
-  const fullText = `Leggi questa storia per bambini ${stijl} con voce calda e dolce:\n\n${text}`;
+  const isDutch = /\b(de|het|een|van|en|dat|zijn|voor|met|die|niet|ook|was|maar)\b/i.test(text);
+
+  const allPcm = [];
 
   try {
-    const resp = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-tts-preview:generateContent?key=${apiKey}`,
-      {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          contents: [{ parts: [{ text: fullText }] }],
-          generationConfig: {
-            responseModalities: ['AUDIO'],
-            speechConfig: {
-              voiceConfig: {
-                prebuiltVoiceConfig: { voiceName: voice }
+    for (let i = 0; i < chunks.length; i++) {
+      setStatus(`Gemini AI… (${i+1}/${total}) ⏳`, 'active');
+
+      let fullText;
+      if (isDutch) {
+        const tempo = rate < 0.75 ? 'heel langzaam, met lange pauzes,' : 'rustig en langzaam, met natuurlijke pauzes,';
+        fullText = i === 0
+          ? `Lees dit verhaal ${tempo} met een warme en zachte stem:\n\n${chunks[i]}`
+          : chunks[i];
+      } else {
+        const stijl = rate < 0.75 ? 'molto lentamente, con lunghe pause,' : 'lentamente, con pause naturali,';
+        fullText = i === 0
+          ? `Leggi questa storia ${stijl} con voce calda e dolce:\n\n${chunks[i]}`
+          : chunks[i];
+      }
+
+      const resp = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-tts-preview:generateContent?key=${apiKey}`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            contents: [{ parts: [{ text: fullText }] }],
+            generationConfig: {
+              responseModalities: ['AUDIO'],
+              speechConfig: {
+                voiceConfig: { prebuiltVoiceConfig: { voiceName: voice } }
               }
             }
-          }
-        })
-      }
-    );
+          })
+        }
+      );
 
-    if (!resp.ok) {
-      const err = await resp.json().catch(() => ({}));
-      throw new Error(err?.error?.message || `Errore HTTP ${resp.status}`);
+      if (!resp.ok) {
+        const err = await resp.json().catch(() => ({}));
+        throw new Error(err?.error?.message || `Errore HTTP ${resp.status}`);
+      }
+
+      const data = await resp.json();
+      const b64  = data?.candidates?.[0]?.content?.parts?.[0]?.inlineData?.data;
+      if (!b64) throw new Error(`Nessun audio per il blocco ${i+1}.`);
+
+      const pcm = Uint8Array.from(atob(b64), c => c.charCodeAt(0));
+      allPcm.push(pcm);
+
+      // Update progress proportionally
+      stopProgress(Math.round(((i+1) / total) * 100));
     }
 
-    const data = await resp.json();
-    const part  = data?.candidates?.[0]?.content?.parts?.[0];
-    const b64   = part?.inlineData?.data;
-    const mime  = part?.inlineData?.mimeType || 'audio/L16;rate=24000';
+    // Concatenate all PCM chunks
+    const totalLen = allPcm.reduce((s, p) => s + p.length, 0);
+    const combined = new Uint8Array(totalLen);
+    let offset = 0;
+    for (const p of allPcm) { combined.set(p, offset); offset += p.length; }
 
-    if (!b64) throw new Error('Nessun audio ricevuto da Gemini.');
-
-    stopProgress(100);
-
-    const pcmBytes = Uint8Array.from(atob(b64), c => c.charCodeAt(0));
-    audioPcm = pcmBytes;
-    const wavBytes = buildWav(pcmBytes, 24000, 1, 16);
+    audioPcm = combined;
+    const wavBytes = buildWav(combined, 24000, 1, 16);
     audioBlob = new Blob([wavBytes], { type: 'audio/wav' });
 
     const url = URL.createObjectURL(audioBlob);
@@ -858,7 +1006,8 @@ async function generateStory() {
     document.getElementById('downloadBtn').style.display = 'flex';
     document.getElementById('downloadBtn').textContent = '⬇ Scarica file MP3';
     document.getElementById('saveLibBtn').style.display = 'flex';
-    setStatus('🌙 Storia pronta!', 'done');
+    const minuten = Math.round(combined.length / 24000 / 2 / 60);
+    setStatus(`🌙 Storia pronta! (~${minuten} min)`, 'done');
 
   } catch(e) {
     stopProgress(0);
@@ -868,6 +1017,31 @@ async function generateStory() {
 
   btn.disabled = false;
   btn.textContent = '▶ Genera storia';
+}
+
+// ── Text chunker ──────────────────────────────────────────────────────
+function splitIntoChunks(text, maxLen) {
+  if (text.length <= maxLen) return [text];
+  const chunks = [];
+  let remaining = text;
+  while (remaining.length > 0) {
+    if (remaining.length <= maxLen) { chunks.push(remaining); break; }
+    // Find last sentence end before maxLen
+    let cut = maxLen;
+    const sub = remaining.substring(0, maxLen);
+    const lastDot = Math.max(
+      sub.lastIndexOf('. '),
+      sub.lastIndexOf('! '),
+      sub.lastIndexOf('? '),
+      sub.lastIndexOf('.\n'),
+      sub.lastIndexOf('!\n'),
+      sub.lastIndexOf('?\n')
+    );
+    if (lastDot > maxLen * 0.5) cut = lastDot + 2;
+    chunks.push(remaining.substring(0, cut).trim());
+    remaining = remaining.substring(cut).trim();
+  }
+  return chunks;
 }
 
 // ── WAV builder (voor intern afspelen) ───────────────────────────────
@@ -1066,8 +1240,15 @@ async function playFromLib(id) {
   statusEl.style.display = 'block';
 
   try {
-    const stijl = parseFloat(item.rate) < 0.75 ? 'molto lentamente, con lunghe pause,' : 'lentamente, con pause naturali,';
-    const fullText = `Leggi questa storia per bambini ${stijl} con voce calda e dolce:\n\n${item.text}`;
+    const isDutch = /\b(de|het|een|van|en|dat|zijn|voor|met|die|niet|ook|was|maar)\b/i.test(item.text);
+    let fullText;
+    if (isDutch) {
+      const tempo = parseFloat(item.rate) < 0.75 ? 'heel langzaam, met lange pauzes,' : 'rustig en langzaam, met natuurlijke pauzes,';
+      fullText = `Lees dit verhaal voor kinderen ${tempo} met een warme en zachte stem:\n\n${item.text}`;
+    } else {
+      const stijl = parseFloat(item.rate) < 0.75 ? 'molto lentamente, con lunghe pause,' : 'lentamente, con pause naturali,';
+      fullText = `Leggi questa storia per bambini ${stijl} con voce calda e dolce:\n\n${item.text}`;
+    }
 
     const resp = await fetch(
       `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-tts-preview:generateContent?key=${apiKey}`,
@@ -1165,4 +1346,4 @@ function stopProgress(target) {
 }
 </script>
 </body>
-  </html>
+</html>

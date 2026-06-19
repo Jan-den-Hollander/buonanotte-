@@ -1,1 +1,1168 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Storie della Buonanotte 🌙</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=Nunito:wght@300;400;600;700&display=swap');
 
+:root {
+  --night:    #110820;
+  --deep:     #1e1035;
+  --purple:   #2d1a50;
+  --parchment:#fdf6ec;
+  --warm:     #f5e9d0;
+  --amber:    #c8813a;
+  --amber2:   #e8a85a;
+  --dusk:     #5c3d6e;
+  --dusk2:    #7a52a0;
+  --star:     #f0c060;
+  --green:    #2e7a50;
+  --green2:   #3d9a68;
+  --red:      #8a2a20;
+  --ink:      #2c1a0e;
+  --muted:    #907060;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  min-height: 100vh;
+  background: var(--night);
+  background-image:
+    radial-gradient(ellipse at 20% 20%, rgba(92,61,110,0.4) 0%, transparent 60%),
+    radial-gradient(ellipse at 80% 80%, rgba(29,10,52,0.6) 0%, transparent 60%);
+  font-family: 'Nunito', sans-serif;
+  color: var(--parchment);
+}
+
+/* Stars */
+.stars {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+.stars::before, .stars::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(1px 1px at 10% 15%, rgba(255,255,255,0.7) 0%, transparent 100%),
+    radial-gradient(1px 1px at 25% 40%, rgba(255,255,255,0.5) 0%, transparent 100%),
+    radial-gradient(1.5px 1.5px at 40% 10%, rgba(255,255,255,0.8) 0%, transparent 100%),
+    radial-gradient(1px 1px at 60% 30%, rgba(255,255,255,0.6) 0%, transparent 100%),
+    radial-gradient(1px 1px at 75% 8%, rgba(255,255,255,0.7) 0%, transparent 100%),
+    radial-gradient(1.5px 1.5px at 88% 22%, rgba(255,255,255,0.5) 0%, transparent 100%),
+    radial-gradient(1px 1px at 15% 60%, rgba(255,255,255,0.4) 0%, transparent 100%),
+    radial-gradient(1px 1px at 50% 55%, rgba(255,255,255,0.6) 0%, transparent 100%),
+    radial-gradient(1px 1px at 92% 50%, rgba(255,255,255,0.5) 0%, transparent 100%),
+    radial-gradient(1.5px 1.5px at 35% 75%, rgba(255,255,255,0.4) 0%, transparent 100%),
+    radial-gradient(1px 1px at 70% 70%, rgba(255,255,255,0.6) 0%, transparent 100%),
+    radial-gradient(1px 1px at 5% 88%, rgba(255,255,255,0.5) 0%, transparent 100%),
+    radial-gradient(1px 1px at 80% 90%, rgba(255,255,255,0.4) 0%, transparent 100%),
+    radial-gradient(2px 2px at 55% 85%, rgba(240,192,96,0.6) 0%, transparent 100%),
+    radial-gradient(1.5px 1.5px at 20% 95%, rgba(240,192,96,0.4) 0%, transparent 100%);
+}
+
+/* Layout */
+.app {
+  position: relative;
+  z-index: 1;
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 32px 16px 60px;
+}
+
+/* Header */
+.header {
+  text-align: center;
+  margin-bottom: 36px;
+}
+
+.moon-wrap {
+  font-size: 64px;
+  line-height: 1;
+  margin-bottom: 12px;
+  filter: drop-shadow(0 0 24px rgba(240,192,96,0.5));
+}
+
+.header h1 {
+  font-family: 'Lora', serif;
+  font-size: 2rem;
+  font-weight: 600;
+  color: var(--parchment);
+  letter-spacing: 0.02em;
+  margin-bottom: 6px;
+}
+
+.header .tagline {
+  font-size: 0.82rem;
+  color: var(--amber2);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  font-weight: 300;
+}
+
+/* Tab nav */
+.tabs {
+  display: flex;
+  gap: 4px;
+  background: rgba(255,255,255,0.05);
+  border-radius: 12px;
+  padding: 4px;
+  margin-bottom: 24px;
+}
+
+.tab {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  border-radius: 9px;
+  background: none;
+  color: rgba(240,224,192,0.5);
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  min-width: unset;
+}
+
+.tab.active {
+  background: var(--purple);
+  color: var(--star);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+}
+
+/* Panels */
+.panel { display: none; }
+.panel.active { display: block; }
+
+/* Cards */
+.card {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 16px;
+}
+
+.card-title {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--star);
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* API Key */
+.key-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+}
+
+.key-row input {
+  flex: 1;
+  min-width: 150px;
+  padding: 10px 14px;
+  background: rgba(255,255,255,0.06);
+  border: 1.5px solid rgba(255,255,255,0.12);
+  border-radius: 9px;
+  color: var(--parchment);
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.9rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.key-row input:focus { border-color: var(--star); }
+.key-row input::placeholder { color: rgba(240,224,192,0.3); }
+
+.key-status {
+  font-size: 0.8rem;
+  color: var(--muted);
+  font-style: italic;
+  margin-bottom: 12px;
+}
+.key-status.ok  { color: #5cb87a; font-style: normal; }
+.key-status.err { color: #e07060; font-style: normal; }
+
+/* Accordion */
+.acc {
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 9px;
+  overflow: hidden;
+}
+
+.acc-head {
+  width: 100%;
+  background: rgba(255,255,255,0.04);
+  border: none;
+  padding: 10px 14px;
+  color: rgba(240,192,96,0.75);
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  min-width: unset;
+  transition: background 0.2s;
+}
+.acc-head:hover { background: rgba(255,255,255,0.07); }
+
+.acc-body {
+  display: none;
+  padding: 14px 16px;
+  font-size: 0.84rem;
+  line-height: 1.78;
+  color: rgba(240,224,192,0.8);
+  border-top: 1px solid rgba(255,255,255,0.08);
+}
+.acc-body.open { display: block; }
+.acc-body ol { padding-left: 18px; }
+.acc-body li { margin-bottom: 6px; }
+.acc-body a { color: var(--star); }
+.acc-body strong { color: #fff; }
+.acc-body .warn { color: #f08060; margin-top: 10px; }
+.acc-body .tip  { color: rgba(200,180,140,0.7); font-size: 0.78rem; margin-top: 8px; }
+
+/* Story textarea */
+.story-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(240,192,96,0.7);
+  margin-bottom: 8px;
+  display: block;
+}
+
+.story-title-input {
+  width: 100%;
+  padding: 10px 14px;
+  background: rgba(255,255,255,0.06);
+  border: 1.5px solid rgba(255,255,255,0.1);
+  border-radius: 9px;
+  color: var(--parchment);
+  font-family: 'Lora', serif;
+  font-size: 1rem;
+  outline: none;
+  margin-bottom: 10px;
+  transition: border-color 0.2s;
+}
+.story-title-input:focus { border-color: var(--amber); }
+.story-title-input::placeholder { color: rgba(240,224,192,0.3); font-style: italic; }
+
+textarea {
+  width: 100%;
+  min-height: 220px;
+  padding: 16px 18px;
+  background: rgba(255,255,255,0.06);
+  border: 1.5px solid rgba(255,255,255,0.1);
+  border-radius: 12px;
+  color: var(--parchment);
+  font-family: 'Lora', serif;
+  font-size: 0.97rem;
+  line-height: 1.85;
+  resize: vertical;
+  outline: none;
+  transition: border-color 0.2s;
+  margin-bottom: 14px;
+}
+textarea:focus { border-color: var(--amber); }
+textarea::placeholder { color: rgba(240,224,192,0.25); font-style: italic; }
+
+/* Controls grid */
+.ctrl-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-bottom: 16px;
+}
+
+.ctrl-group { display: flex; flex-direction: column; gap: 6px; }
+
+.ctrl-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(240,192,96,0.7);
+}
+
+select {
+  padding: 9px 30px 9px 12px;
+  background: rgba(255,255,255,0.08);
+  border: 1.5px solid rgba(255,255,255,0.12);
+  border-radius: 9px;
+  color: var(--parchment);
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.88rem;
+  outline: none;
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M0 0l6 8 6-8z' fill='%23e8a85a'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-color: rgba(255,255,255,0.08);
+}
+
+select option { background: #2d1a50; color: var(--parchment); }
+
+input[type=range] {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 5px;
+  border-radius: 3px;
+  background: rgba(255,255,255,0.15);
+  outline: none;
+  margin-top: 8px;
+}
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 18px; height: 18px;
+  border-radius: 50%;
+  background: var(--amber2);
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+}
+.range-ends {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.68rem;
+  color: rgba(200,160,100,0.6);
+  margin-top: 3px;
+}
+
+/* Buttons */
+button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: none;
+  border-radius: 10px;
+  font-family: 'Nunito', sans-serif;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.18s;
+}
+
+.btn-primary {
+  width: 100%;
+  padding: 14px 20px;
+  font-size: 1rem;
+  background: linear-gradient(135deg, var(--dusk), var(--dusk2));
+  color: white;
+  box-shadow: 0 4px 20px rgba(92,61,110,0.4);
+  margin-bottom: 10px;
+}
+.btn-primary:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 6px 24px rgba(92,61,110,0.55); }
+.btn-primary:disabled { opacity: 0.45; cursor: not-allowed; }
+
+.btn-download {
+  width: 100%;
+  padding: 12px 20px;
+  font-size: 0.95rem;
+  background: linear-gradient(135deg, var(--green), var(--green2));
+  color: white;
+  box-shadow: 0 4px 16px rgba(46,122,80,0.35);
+  display: none;
+  margin-bottom: 10px;
+}
+.btn-download:hover { transform: translateY(-1px); }
+
+.btn-save-lib {
+  width: 100%;
+  padding: 11px 20px;
+  font-size: 0.9rem;
+  background: rgba(240,192,96,0.12);
+  color: var(--star);
+  border: 1px solid rgba(240,192,96,0.25);
+  display: none;
+  margin-bottom: 10px;
+}
+.btn-save-lib:hover { background: rgba(240,192,96,0.2); }
+
+.btn-sm {
+  padding: 9px 13px;
+  font-size: 0.82rem;
+}
+.btn-amber { background: var(--amber); color: white; }
+.btn-amber:hover { background: var(--amber2); }
+.btn-ghost { background: rgba(255,255,255,0.08); color: rgba(240,224,192,0.8); border: 1px solid rgba(255,255,255,0.12); }
+.btn-ghost:hover { background: rgba(255,255,255,0.13); }
+.btn-danger { background: rgba(138,42,32,0.3); color: #f09080; border: 1px solid rgba(138,42,32,0.4); }
+.btn-danger:hover { background: rgba(138,42,32,0.5); }
+
+/* Progress */
+.progress-wrap {
+  background: rgba(255,255,255,0.08);
+  border-radius: 6px;
+  height: 6px;
+  overflow: hidden;
+  margin-bottom: 10px;
+}
+#progressBar {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, var(--amber), var(--dusk2));
+  border-radius: 6px;
+  transition: width 0.4s ease;
+}
+
+#status {
+  text-align: center;
+  font-size: 0.86rem;
+  color: var(--muted);
+  min-height: 22px;
+  font-style: italic;
+  margin-bottom: 14px;
+}
+#status.active { color: var(--amber2); font-style: normal; }
+#status.done   { color: #5cb87a; font-style: normal; }
+#status.error  { color: #e07060; font-style: normal; }
+
+/* Audio player */
+audio {
+  display: none;
+  width: 100%;
+  margin-bottom: 10px;
+  border-radius: 8px;
+  filter: invert(0.85) hue-rotate(180deg);
+}
+
+/* Library */
+.lib-empty {
+  text-align: center;
+  padding: 40px 20px;
+  color: rgba(200,160,100,0.4);
+  font-style: italic;
+}
+.lib-empty .big { font-size: 40px; margin-bottom: 12px; }
+
+.lib-item {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 12px;
+  padding: 14px 16px;
+  margin-bottom: 10px;
+  transition: border-color 0.2s;
+}
+.lib-item:hover { border-color: rgba(240,192,96,0.3); }
+
+.lib-item-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.lib-item-title {
+  font-family: 'Lora', serif;
+  font-size: 1rem;
+  color: var(--parchment);
+  font-weight: 600;
+}
+
+.lib-item-meta {
+  font-size: 0.74rem;
+  color: var(--muted);
+  margin-top: 2px;
+}
+
+.lib-actions {
+  display: flex;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.lib-player {
+  display: none;
+  width: 100%;
+  border-radius: 6px;
+  filter: invert(0.85) hue-rotate(180deg);
+}
+
+/* Warning box */
+.warn-box {
+  background: rgba(138,42,32,0.15);
+  border: 1px solid rgba(200,80,50,0.3);
+  border-radius: 12px;
+  padding: 14px 16px;
+  margin-bottom: 16px;
+  font-size: 0.84rem;
+  line-height: 1.72;
+  color: rgba(240,200,180,0.9);
+}
+.warn-box .warn-title {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #f08060;
+  display: block;
+  margin-bottom: 8px;
+}
+
+/* Info box */
+.info-box {
+  background: rgba(92,61,110,0.15);
+  border: 1px solid rgba(92,61,110,0.3);
+  border-radius: 12px;
+  padding: 14px 16px;
+  margin-bottom: 16px;
+  font-size: 0.84rem;
+  line-height: 1.72;
+  color: rgba(220,200,240,0.85);
+}
+.info-box .info-title {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--dusk2);
+  display: block;
+  margin-bottom: 8px;
+}
+
+.save-note {
+  text-align: center;
+  font-size: 0.73rem;
+  color: rgba(180,140,100,0.5);
+  font-style: italic;
+  margin-top: 6px;
+}
+
+@media (max-width: 480px) {
+  .header h1 { font-size: 1.5rem; }
+  .ctrl-grid { grid-template-columns: 1fr; }
+  .app { padding: 20px 12px 60px; }
+}
+</style>
+</head>
+<body>
+<div class="stars"></div>
+<div class="app">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="moon-wrap">🌙</div>
+    <h1>Storie della Buonanotte</h1>
+    <p class="tagline">Fiabe italiane · voce Gemini AI</p>
+  </div>
+
+  <!-- TABS -->
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('crea')">✍️ Crea</button>
+    <button class="tab" onclick="switchTab('biblioteca')">📚 Biblioteca</button>
+    <button class="tab" onclick="switchTab('impostazioni')">⚙️ Impostazioni</button>
+  </div>
+
+  <!-- ══════════════ TAB: CREA ══════════════ -->
+  <div class="panel active" id="panel-crea">
+
+    <div class="info-box">
+      <span class="info-title">📖 Come funziona</span>
+      <ol style="padding-left:18px; margin:0;">
+        <li>Dai un titolo alla storia e incolla il testo.</li>
+        <li>Scegli la voce e la velocità.</li>
+        <li>Premi <strong>▶ Genera storia</strong> — Gemini AI crea l'audio.</li>
+        <li>Ascolta l'anteprima, poi <strong>salva nella Biblioteca</strong> per riascoltarla in futuro, oppure <strong>scarica il file WAV</strong> sul telefono.</li>
+      </ol>
+    </div>
+
+    <!-- Title -->
+    <span class="story-label">📌 Titolo della storia</span>
+    <input type="text" class="story-title-input" id="storyTitle" placeholder="es. Pippo e il buchino nella siepe…">
+
+    <!-- Text -->
+    <span class="story-label">✍️ Testo</span>
+    <textarea id="storyText" placeholder="Incolla qui la storia in italiano…">Pippo camminava nel giardino e si annoiava tanto. Ma guarda! Cosa vide lì? Un piccolo buchino nella siepe.
+"Cosa ci sarà dall'altra parte della siepe?", pensò Pippo. Un palazzo? Uno steccato? Un cavaliere? Si sedette per terra e guardò attraverso il buchino. E cosa vide? Un piccolo nasino, una piccola boccuccia e due occhietti azzurri. Lì c'era una bambina. Era grande proprio come Pippo.
+"Come ti chiami?", chiese Pippo.
+"Jolina", disse la bambina. "Io abito qui."
+"Ieri non abitavi mica qui", disse Pippo.
+"Oggi ci abito!", disse Jolina. "Vieni a giocare con me?"
+"Passerò attraverso il buco", disse Pippo. E infilò prima la testa nel buco, poi un braccio, poi l'altro braccio... e a un certo punto rimase incastrato!
+E Jolina tirò da un braccio, e poi dall'altro braccio, ma non servì a nulla. Pippo era proprio incastrato. E Pippo piangeva e gridava!
+In quel momento il papà di Pippo accorse in un giardino, e il papà di Jolina accorse nell'altro giardino. E insieme, aiutarono Pippo a tornare indietro.
+"Ecco fatto", disse il papà di Pippo. "Adesso hai una vicina di casa. Però prima devi uscire per benino dalla porta d'ingresso ed entrare dalla porta di Jolina. Solo allora potrete giocare insieme."
+E così accadde. Pippo e Jolina giocarono insieme. Un giorno nel giardinetto di Pippo, e il giorno dopo nel giardinetto di Jolina. E giocavano... a fare il papà e la mamma.</textarea>
+
+    <!-- Controls -->
+    <div class="ctrl-grid">
+      <div class="ctrl-group">
+        <span class="ctrl-label">🎙️ Voce</span>
+        <select id="voiceSelect">
+          <option value="Zephyr">Zephyr — calda, serena (♀)</option>
+          <option value="Kore">Kore — morbida, narrativa (♀)</option>
+          <option value="Leda">Leda — dolce, rilassante (♀)</option>
+          <option value="Aoede">Aoede — chiara, espressiva (♀)</option>
+          <option value="Charon">Charon — gentile, chiaro (♂)</option>
+          <option value="Fenrir">Fenrir — caldo, profondo (♂)</option>
+          <option value="Orus">Orus — stabile, tranquillo (♂)</option>
+          <option value="Puck">Puck — vivace, leggero (♂)</option>
+        </select>
+      </div>
+      <div class="ctrl-group">
+        <span class="ctrl-label">🐢 Velocità: <span id="rateVal">0.85</span>×</span>
+        <input type="range" id="rateSlider" min="0.5" max="1.4" step="0.05" value="0.85"
+               oninput="document.getElementById('rateVal').textContent=parseFloat(this.value).toFixed(2)">
+        <div class="range-ends"><span>lento</span><span>normale</span></div>
+      </div>
+    </div>
+
+    <!-- Generate -->
+    <button class="btn-primary" id="generateBtn" onclick="generateStory()">▶ Genera storia</button>
+
+    <!-- Progress -->
+    <div class="progress-wrap"><div id="progressBar"></div></div>
+    <div id="status">Inserisci la chiave API nelle Impostazioni per iniziare ✨</div>
+
+    <!-- Player -->
+    <audio id="audioPlayer" controls></audio>
+
+    <!-- Download & save -->
+    <button class="btn-download" id="downloadBtn" onclick="downloadAudio()">⬇ Scarica file MP3</button>
+    <button class="btn-save-lib" id="saveLibBtn" onclick="saveToLibrary()">📚 Salva nella Biblioteca</button>
+    <p class="save-note">I file MP3 vengono salvati nella cartella <strong>Download</strong> del telefono · La Biblioteca memorizza il testo per rigenerare l'audio</p>
+
+  </div>
+
+  <!-- ══════════════ TAB: BIBLIOTECA ══════════════ -->
+  <div class="panel" id="panel-biblioteca">
+    <div class="card">
+      <div class="card-title">📚 Le tue storie</div>
+      <div id="libraryList">
+        <div class="lib-empty">
+          <div class="big">🌙</div>
+          <p>Nessuna storia salvata.<br>Crea una storia e premi<br>"Salva nella Biblioteca".</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════ TAB: IMPOSTAZIONI ══════════════ -->
+  <div class="panel" id="panel-impostazioni">
+
+    <!-- API Key -->
+    <div class="card">
+      <div class="card-title">🔑 Chiave API Gemini</div>
+      <div class="key-row">
+        <input type="password" id="apiKeyInput" placeholder="AIza…">
+        <button class="btn-sm btn-ghost" onclick="toggleKeyVis()" type="button">👁</button>
+        <button class="btn-sm btn-amber" onclick="saveKey()" type="button">Salva</button>
+      </div>
+      <div class="key-status" id="keyStatus">Nessuna chiave salvata.</div>
+
+      <div class="acc">
+        <button class="acc-head" onclick="toggleAcc(this)" type="button">
+          ℹ️ Come ottenere la chiave API (gratuita) <span>▼</span>
+        </button>
+        <div class="acc-body">
+          <ol>
+            <li>Vai su <a href="https://aistudio.google.com/apikey" target="_blank"><strong>aistudio.google.com/apikey</strong></a><br>(serve un account Google gratuito).</li>
+            <li>Clicca <strong>"Create API key"</strong>.</li>
+            <li>Copia la chiave generata — è una lunga stringa di caratteri.</li>
+            <li>Incollala qui sopra e premi <strong>Salva</strong>.</li>
+            <li>La chiave è salvata <strong>solo su questo telefono</strong>.</li>
+          </ol>
+          <p class="tip">💡 Per una fiaba il consumo è minimo — resti abbondantemente nel livello gratuito.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- TalkBack warning -->
+    <div class="warn-box">
+      <span class="warn-title">⛔ Attenzione — Samsung: voci aggiuntive</span>
+      Per aggiungere voci italiane, apri <strong>Impostazioni del telefono</strong> e cerca 🔍 <em>tekst naar spraak</em>.<br><br>
+      Appariranno due risultati. <strong>Non toccare il primo</strong> ("Accessibilità → TalkBack") — è per non vedenti e prende il controllo completo dello schermo, molto difficile da disattivare.<br>
+      Scegli sempre il <strong>secondo risultato</strong>: "Instellingen Tekst naar spraak".<br><br>
+      <em>Questa app usa Gemini AI, quindi le voci del telefono non vengono usate qui.</em>
+    </div>
+
+    <!-- Info gratis -->
+    <div class="info-box">
+      <span class="info-title">💰 Gratuito?</span>
+      Sì. Gemini API ha un livello gratuito generoso. Una fiaba di 500 parole costa circa 0,001 € — praticamente zero. Solo se generi centinaia di storie al giorno potresti avvicinarti ai limiti. Per uso personale è completamente gratuito.
+    </div>
+
+  </div>
+
+</div><!-- /app -->
+
+<script>
+// ── Constants ────────────────────────────────────────────────────────
+const KEY_STORE = 'buonanotte_gemini_key';
+const LIB_STORE = 'buonanotte_library';
+
+// ── Init ─────────────────────────────────────────────────────────────
+window.addEventListener('load', () => {
+  loadKey();
+  renderLibrary();
+  updateStatus();
+});
+
+function updateStatus() {
+  const k = localStorage.getItem(KEY_STORE);
+  if (k) setStatus('Pronto ✨', '');
+}
+
+// ── Tabs ─────────────────────────────────────────────────────────────
+function switchTab(name) {
+  document.querySelectorAll('.tab').forEach((t, i) => {
+    const panels = ['crea','biblioteca','impostazioni'];
+    t.classList.toggle('active', panels[i] === name);
+  });
+  document.querySelectorAll('.panel').forEach(p => {
+    p.classList.toggle('active', p.id === 'panel-' + name);
+  });
+  if (name === 'biblioteca') renderLibrary();
+}
+
+// ── API Key ──────────────────────────────────────────────────────────
+function loadKey() {
+  const k = localStorage.getItem(KEY_STORE);
+  if (k) {
+    document.getElementById('apiKeyInput').value = k;
+    setKeyStatus('✅ Chiave salvata sul dispositivo.', 'ok');
+  }
+}
+
+function saveKey() {
+  const k = document.getElementById('apiKeyInput').value.trim();
+  if (!k) { setKeyStatus('⚠️ Inserisci la chiave.', 'err'); return; }
+  if (k.length < 20) { setKeyStatus('⚠️ Chiave troppo corta — controlla di averla copiata completa.', 'err'); return; }
+  localStorage.setItem(KEY_STORE, k);
+  setKeyStatus('✅ Chiave salvata sul dispositivo.', 'ok');
+  setStatus('Pronto ✨', '');
+}
+
+function setKeyStatus(msg, cls) {
+  const el = document.getElementById('keyStatus');
+  el.textContent = msg;
+  el.className = 'key-status ' + (cls || '');
+}
+
+function toggleKeyVis() {
+  const inp = document.getElementById('apiKeyInput');
+  inp.type = inp.type === 'password' ? 'text' : 'password';
+}
+
+// ── Accordion ────────────────────────────────────────────────────────
+function toggleAcc(btn) {
+  const body = btn.nextElementSibling;
+  const arrow = btn.querySelector('span');
+  const open = body.classList.toggle('open');
+  arrow.textContent = open ? '▲' : '▼';
+}
+
+// ── Generate ─────────────────────────────────────────────────────────
+let audioBlob = null;
+let audioPcm = null;
+let currentTitle = '';
+let progressTimer = null;
+
+async function generateStory() {
+  const apiKey = localStorage.getItem(KEY_STORE) ||
+                 document.getElementById('apiKeyInput').value.trim();
+  if (!apiKey) {
+    setStatus('⚠️ Inserisci prima la chiave API nella scheda Impostazioni.', 'error');
+    switchTab('impostazioni');
+    return;
+  }
+
+  const text = document.getElementById('storyText').value.trim();
+  if (!text) { setStatus('⚠️ Scrivi prima una storia!', 'error'); return; }
+
+  currentTitle = document.getElementById('storyTitle').value.trim() ||
+                 text.substring(0, 40).replace(/\s+/g,' ') + '…';
+
+  const voice = document.getElementById('voiceSelect').value;
+  const rate  = parseFloat(document.getElementById('rateSlider').value);
+
+  const btn = document.getElementById('generateBtn');
+  btn.disabled = true;
+  btn.textContent = '⏳ Generazione…';
+  document.getElementById('downloadBtn').style.display = 'none';
+  document.getElementById('saveLibBtn').style.display = 'none';
+  document.getElementById('audioPlayer').style.display = 'none';
+  audioBlob = null;
+
+  setStatus('Gemini AI sta preparando la storia…', 'active');
+  startProgress();
+
+  const stijl = rate < 0.75 ? 'molto lentamente, con lunghe pause,' : 'lentamente, con pause naturali,';
+  const fullText = `Leggi questa storia per bambini ${stijl} con voce calda e dolce:\n\n${text}`;
+
+  try {
+    const resp = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-tts-preview:generateContent?key=${apiKey}`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: fullText }] }],
+          generationConfig: {
+            responseModalities: ['AUDIO'],
+            speechConfig: {
+              voiceConfig: {
+                prebuiltVoiceConfig: { voiceName: voice }
+              }
+            }
+          }
+        })
+      }
+    );
+
+    if (!resp.ok) {
+      const err = await resp.json().catch(() => ({}));
+      throw new Error(err?.error?.message || `Errore HTTP ${resp.status}`);
+    }
+
+    const data = await resp.json();
+    const part  = data?.candidates?.[0]?.content?.parts?.[0];
+    const b64   = part?.inlineData?.data;
+    const mime  = part?.inlineData?.mimeType || 'audio/L16;rate=24000';
+
+    if (!b64) throw new Error('Nessun audio ricevuto da Gemini.');
+
+    stopProgress(100);
+
+    const pcmBytes = Uint8Array.from(atob(b64), c => c.charCodeAt(0));
+    audioPcm = pcmBytes;
+    const wavBytes = buildWav(pcmBytes, 24000, 1, 16);
+    audioBlob = new Blob([wavBytes], { type: 'audio/wav' });
+
+    const url = URL.createObjectURL(audioBlob);
+    const player = document.getElementById('audioPlayer');
+    player.src = url;
+    player.style.display = 'block';
+    player.load();
+    player.play().catch(() => {});
+
+    document.getElementById('downloadBtn').style.display = 'flex';
+    document.getElementById('downloadBtn').textContent = '⬇ Scarica file MP3';
+    document.getElementById('saveLibBtn').style.display = 'flex';
+    setStatus('🌙 Storia pronta!', 'done');
+
+  } catch(e) {
+    stopProgress(0);
+    setStatus('❌ ' + e.message, 'error');
+    console.error(e);
+  }
+
+  btn.disabled = false;
+  btn.textContent = '▶ Genera storia';
+}
+
+// ── WAV builder (voor intern afspelen) ───────────────────────────────
+function buildWav(pcmData, sampleRate, numChannels, bitsPerSample) {
+  const dataLen = pcmData.length;
+  const buffer = new ArrayBuffer(44 + dataLen);
+  const view = new DataView(buffer);
+  const writeStr = (off, str) => { for (let i=0;i<str.length;i++) view.setUint8(off+i, str.charCodeAt(i)); };
+  writeStr(0,  'RIFF');
+  view.setUint32(4,  36 + dataLen, true);
+  writeStr(8,  'WAVE');
+  writeStr(12, 'fmt ');
+  view.setUint32(16, 16, true);
+  view.setUint16(20, 1,  true);
+  view.setUint16(22, numChannels, true);
+  view.setUint32(24, sampleRate, true);
+  view.setUint32(28, sampleRate * numChannels * bitsPerSample / 8, true);
+  view.setUint16(32, numChannels * bitsPerSample / 8, true);
+  view.setUint16(34, bitsPerSample, true);
+  writeStr(36, 'data');
+  view.setUint32(40, dataLen, true);
+  new Uint8Array(buffer).set(pcmData, 44);
+  return new Uint8Array(buffer);
+}
+
+// ── MP3 encoder via lamejs ────────────────────────────────────────────
+let lameLoaded = false;
+function loadLame() {
+  return new Promise((resolve) => {
+    if (lameLoaded) { resolve(); return; }
+    const s = document.createElement('script');
+    s.src = 'https://cdnjs.cloudflare.com/ajax/libs/lamejs/1.2.1/lame.min.js';
+    s.onload = () => { lameLoaded = true; resolve(); };
+    s.onerror = () => resolve(); // fallback to WAV if fails
+    document.head.appendChild(s);
+  });
+}
+
+async function pcmToMp3(pcmBytes, sampleRate) {
+  await loadLame();
+  if (typeof lamejs === 'undefined') return null;
+
+  // PCM is 16-bit signed little-endian — convert to Int16Array
+  const samples = new Int16Array(pcmBytes.buffer, pcmBytes.byteOffset, pcmBytes.byteLength / 2);
+  const mp3enc = new lamejs.Mp3Encoder(1, sampleRate, 128); // mono, 24kHz, 128kbps
+  const blockSize = 1152;
+  const mp3Data = [];
+
+  for (let i = 0; i < samples.length; i += blockSize) {
+    const chunk = samples.subarray(i, i + blockSize);
+    const mp3buf = mp3enc.encodeBuffer(chunk);
+    if (mp3buf.length > 0) mp3Data.push(new Uint8Array(mp3buf));
+  }
+  const final = mp3enc.flush();
+  if (final.length > 0) mp3Data.push(new Uint8Array(final));
+
+  const totalLen = mp3Data.reduce((s, a) => s + a.length, 0);
+  const out = new Uint8Array(totalLen);
+  let offset = 0;
+  for (const chunk of mp3Data) { out.set(chunk, offset); offset += chunk.length; }
+  return out;
+}
+
+// ── Download ─────────────────────────────────────────────────────────
+async function downloadAudio() {
+  if (!audioPcm) return;
+  const btn = document.getElementById('downloadBtn');
+  btn.textContent = '⏳ Conversione MP3…';
+  btn.disabled = true;
+
+  try {
+    const mp3 = await pcmToMp3(audioPcm, 24000);
+    let blob, ext;
+    if (mp3) {
+      blob = new Blob([mp3], { type: 'audio/mpeg' });
+      ext = 'mp3';
+    } else {
+      // fallback WAV
+      blob = audioBlob;
+      ext = 'wav';
+    }
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    const safe = currentTitle.replace(/[^a-z0-9àèìòùáéíóú\s]/gi,'').trim().replace(/\s+/g,'_').substring(0,40);
+    const d = new Date();
+    const stamp = `${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}`;
+    a.href = url;
+    a.download = `${safe || 'storia'}_${stamp}.${ext}`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(url), 5000);
+  } finally {
+    btn.textContent = '⬇ Scarica file MP3';
+    btn.disabled = false;
+  }
+}
+
+// ── Library ───────────────────────────────────────────────────────────
+function getLibrary() {
+  try { return JSON.parse(localStorage.getItem(LIB_STORE) || '[]'); }
+  catch { return []; }
+}
+
+function saveLibrary(lib) {
+  localStorage.setItem(LIB_STORE, JSON.stringify(lib));
+}
+
+async function saveToLibrary() {
+  const text = document.getElementById('storyText').value.trim();
+  if (!text) return;
+  const btn = document.getElementById('saveLibBtn');
+  btn.disabled = true;
+  btn.textContent = '⏳ Salvataggio…';
+
+  try {
+    const lib = getLibrary();
+    const id = Date.now();
+    const d = new Date();
+    lib.unshift({
+      id,
+      title: currentTitle,
+      date: d.toLocaleDateString('it-IT'),
+      voice: document.getElementById('voiceSelect').value,
+      rate:  document.getElementById('rateSlider').value,
+      text:  text
+    });
+    if (lib.length > 30) lib.splice(30);
+    saveLibrary(lib);
+
+    btn.textContent = '✅ Salvata!';
+    setTimeout(() => {
+      btn.disabled = false;
+      btn.textContent = '📚 Salva nella Biblioteca';
+    }, 2000);
+
+  } catch(e) {
+    btn.disabled = false;
+    btn.textContent = '📚 Salva nella Biblioteca';
+    setStatus('❌ Salvataggio fallito: ' + e.message, 'error');
+  }
+}
+
+function renderLibrary() {
+  const lib = getLibrary();
+  const container = document.getElementById('libraryList');
+
+  if (lib.length === 0) {
+    container.innerHTML = `<div class="lib-empty"><div class="big">🌙</div><p>Nessuna storia salvata.<br>Crea una storia e premi<br>"Salva nella Biblioteca".</p></div>`;
+    return;
+  }
+
+  container.innerHTML = lib.map(item => `
+    <div class="lib-item" id="libitem-${item.id}">
+      <div class="lib-item-top">
+        <div>
+          <div class="lib-item-title">${escHtml(item.title)}</div>
+          <div class="lib-item-meta">${item.date} · voce ${item.voice} · ${item.rate}×</div>
+        </div>
+        <div class="lib-actions">
+          <button class="btn-sm btn-ghost" onclick="playFromLib(${item.id})" title="Ascolta">▶</button>
+          <button class="btn-sm btn-ghost" onclick="loadInEditor(${item.id})" title="Modifica">✏️</button>
+          <button class="btn-sm btn-danger" onclick="deleteLib(${item.id})" title="Elimina">🗑</button>
+        </div>
+      </div>
+      <div id="libstatus-${item.id}" style="font-size:0.8rem;color:#e8a85a;margin-top:6px;display:none;font-style:italic;"></div>
+      <audio class="lib-player" id="libplayer-${item.id}" controls style="display:none;width:100%;margin-top:8px;border-radius:6px;filter:invert(0.85) hue-rotate(180deg);"></audio>
+    </div>
+  `).join('');
+}
+
+async function playFromLib(id) {
+  const lib = getLibrary();
+  const item = lib.find(i => i.id === id);
+  if (!item) return;
+
+  const player = document.getElementById(`libplayer-${id}`);
+  const statusEl = document.getElementById(`libstatus-${id}`);
+
+  // Toggle off if already playing
+  if (player.style.display === 'block') {
+    player.pause();
+    player.style.display = 'none';
+    statusEl.style.display = 'none';
+    return;
+  }
+
+  const apiKey = localStorage.getItem(KEY_STORE);
+  if (!apiKey) {
+    statusEl.textContent = '⚠️ Inserisci la chiave API nelle Impostazioni.';
+    statusEl.style.display = 'block';
+    return;
+  }
+
+  statusEl.textContent = '⏳ Gemini AI sta preparando l\'audio…';
+  statusEl.style.display = 'block';
+
+  try {
+    const stijl = parseFloat(item.rate) < 0.75 ? 'molto lentamente, con lunghe pause,' : 'lentamente, con pause naturali,';
+    const fullText = `Leggi questa storia per bambini ${stijl} con voce calda e dolce:\n\n${item.text}`;
+
+    const resp = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-tts-preview:generateContent?key=${apiKey}`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: fullText }] }],
+          generationConfig: {
+            responseModalities: ['AUDIO'],
+            speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: item.voice } } }
+          }
+        })
+      }
+    );
+
+    if (!resp.ok) {
+      const err = await resp.json().catch(() => ({}));
+      throw new Error(err?.error?.message || `HTTP ${resp.status}`);
+    }
+
+    const data = await resp.json();
+    const b64  = data?.candidates?.[0]?.content?.parts?.[0]?.inlineData?.data;
+    if (!b64) throw new Error('Nessun audio.');
+
+    const pcm = Uint8Array.from(atob(b64), c => c.charCodeAt(0));
+    const wav = buildWav(pcm, 24000, 1, 16);
+    const blob = new Blob([wav], { type: 'audio/wav' });
+    const url  = URL.createObjectURL(blob);
+
+    player.src = url;
+    player.style.display = 'block';
+    player.load();
+    player.play().catch(() => {});
+    statusEl.textContent = '🌙 In riproduzione…';
+
+    player.onended = () => {
+      statusEl.textContent = 'Sogni d\'oro! ✨';
+      setTimeout(() => { statusEl.style.display = 'none'; }, 3000);
+    };
+
+  } catch(e) {
+    statusEl.textContent = '❌ ' + e.message;
+  }
+}
+
+function loadInEditor(id) {
+  const lib = getLibrary();
+  const item = lib.find(i => i.id === id);
+  if (!item) return;
+  document.getElementById('storyTitle').value = item.title;
+  document.getElementById('storyText').value = item.text;
+  document.getElementById('voiceSelect').value = item.voice;
+  document.getElementById('rateSlider').value = item.rate;
+  document.getElementById('rateVal').textContent = parseFloat(item.rate).toFixed(2);
+  switchTab('crea');
+}
+
+function downloadLib(id) {
+  // kept for compatibility — not used in new UI
+}
+
+function deleteLib(id) {
+  if (!confirm('Eliminare questa storia?')) return;
+  const lib = getLibrary().filter(i => i.id !== id);
+  saveLibrary(lib);
+  renderLibrary();
+}
+
+function escHtml(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ── Status & progress ────────────────────────────────────────────────
+function setStatus(msg, cls) {
+  const el = document.getElementById('status');
+  el.textContent = msg;
+  el.className = cls || '';
+}
+
+function startProgress() {
+  const bar = document.getElementById('progressBar');
+  bar.style.width = '0%';
+  let w = 0;
+  clearInterval(progressTimer);
+  progressTimer = setInterval(() => {
+    w = Math.min(w + Math.random() * 2, 88);
+    bar.style.width = w + '%';
+  }, 700);
+}
+
+function stopProgress(target) {
+  clearInterval(progressTimer);
+  document.getElementById('progressBar').style.width = target + '%';
+}
+</script>
+</body>
+</html>

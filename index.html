@@ -1,3 +1,39 @@
+<!--
+================================================================================
+  © Jan den Hollander — jandenhollander@duck.com
+  GitHub: https://github.com/jandenhollander
+  Projectnaam: Storie della Buonanotte 🌙
+  Versie: 1.0 | Datum: 2026-06-20
+
+  LICENTIE / LICENSE (NL | EN | IT)
+  ──────────────────────────────────────────────────────────────────────────────
+  NL: Dit werk is auteursrechtelijk beschermd. Het mag vrij worden gebruikt,
+  gedeeld en verspreid, uitsluitend voor niet-commerciële doeleinden en
+  uitsluitend in ongewijzigde vorm, met vermelding van de oorspronkelijke
+  auteur. Commercieel gebruik, wijziging, verkoop of integratie in betaalde
+  producten of diensten is uitdrukkelijk verboden zonder schriftelijke
+  toestemming van de auteur. Hulp is en blijft gratis.
+
+  EN: This work is protected by copyright. It may be freely used, shared and
+  distributed for non-commercial purposes only, in unmodified form, with
+  attribution to the original author. Commercial use, modification, sale or
+  integration into paid products or services is strictly prohibited without
+  prior written consent of the author. Help is and remains free.
+
+  IT: Quest'opera è protetta da diritto d'autore. Può essere liberamente
+  utilizzata, condivisa e distribuita esclusivamente per scopi non commerciali,
+  nella sua forma originale e non modificata, con attribuzione all'autore
+  originale. L'uso commerciale, la modifica, la vendita o l'integrazione in
+  prodotti o servizi a pagamento sono espressamente vietati senza il consenso
+  scritto dell'autore. L'aiuto è e rimane gratuito.
+
+  Originele broncode / Original source / Fonte originale:
+  https://github.com/jandenhollander
+
+  Alle rechten voorbehouden / All rights reserved / Tutti i diritti riservati
+  © Jan den Hollander
+================================================================================
+-->
 <!DOCTYPE html>
 <html lang="it">
 <head>
@@ -925,8 +961,8 @@ async function generateStory() {
   document.getElementById('audioPlayer').style.display = 'none';
   audioBlob = null; audioPcm = null;
 
-  // Split text into chunks of max 4000 chars on sentence boundaries
-  const chunks = splitIntoChunks(text, 4000);
+  // Split text into chunks of max 2000 chars on sentence boundaries
+  const chunks = splitIntoChunks(text, 2000);
   const total = chunks.length;
 
   setStatus(`Gemini AI sta preparando la storia… (1/${total})`, 'active');
@@ -980,7 +1016,7 @@ async function generateStory() {
       if (!b64) throw new Error(`Nessun audio per il blocco ${i+1}.`);
 
       const pcm = Uint8Array.from(atob(b64), c => c.charCodeAt(0));
-      allPcm.push(pcm);
+      allPcm.push(normalizePcm(pcm));
 
       // Update progress proportionally
       stopProgress(Math.round(((i+1) / total) * 100));
@@ -1042,6 +1078,35 @@ function splitIntoChunks(text, maxLen) {
     remaining = remaining.substring(cut).trim();
   }
   return chunks;
+}
+
+// ── PCM normalisatie (gelijkmatig volume per fragment) ────────────────
+function normalizePcm(pcmBytes) {
+  // Interpret as 16-bit signed LE samples
+  const samples = new Int16Array(pcmBytes.buffer, pcmBytes.byteOffset, pcmBytes.byteLength / 2);
+
+  // Find peak amplitude
+  let peak = 0;
+  for (let i = 0; i < samples.length; i++) {
+    const abs = Math.abs(samples[i]);
+    if (abs > peak) peak = abs;
+  }
+
+  if (peak === 0) return pcmBytes; // silence — skip
+
+  // Scale to 90% of max (32767) to avoid clipping
+  const target = 32767 * 0.90;
+  const gain = target / peak;
+
+  // Only amplify, don't reduce already-loud fragments more than 10%
+  const appliedGain = Math.min(gain, 1.5);
+
+  const normalized = new Int16Array(samples.length);
+  for (let i = 0; i < samples.length; i++) {
+    normalized[i] = Math.max(-32768, Math.min(32767, Math.round(samples[i] * appliedGain)));
+  }
+
+  return new Uint8Array(normalized.buffer);
 }
 
 // ── WAV builder (voor intern afspelen) ───────────────────────────────
@@ -1345,5 +1410,144 @@ function stopProgress(target) {
   document.getElementById('progressBar').style.width = target + '%';
 }
 </script>
+<!-- ① ZICHTBARE FOOTER -->
+<div id="jdh-copyright-footer" style="
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  background: rgba(0,0,0,0.82);
+  color: #ccc;
+  font-size: 11px;
+  text-align: center;
+  padding: 4px 8px;
+  z-index: 99999;
+  font-family: sans-serif;
+  letter-spacing: 0.3px;
+  user-select: none;
+">
+  © <span id="jdh-year"></span> Jan den Hollander &nbsp;|&nbsp;
+  <span id="jdh-project-title" style="color:#7eb8f7"></span> &nbsp;|&nbsp;
+  Vrij gebruik · niet-commercieel · ongewijzigd &nbsp;|&nbsp;
+  <span style="color:#aaa; cursor:pointer; text-decoration:underline"
+        onclick="document.getElementById('jdh-modal').style.display='flex'">
+    ℹ️ Licentie
+  </span>
+</div>
+
+<!-- ② LICENTIE MODAL -->
+<div id="jdh-modal" style="
+  display:none; position:fixed; inset:0;
+  background:rgba(0,0,0,0.7);
+  z-index:999999;
+  align-items:center; justify-content:center;
+">
+  <div style="
+    background:#1a1a2e; color:#e0e0e0;
+    border:1px solid #444; border-radius:10px;
+    max-width:480px; width:90%; padding:24px;
+    font-family:sans-serif; font-size:13px; line-height:1.6;
+  ">
+    <h3 style="color:#7eb8f7; margin-top:0">
+      © Jan den Hollander &nbsp;·&nbsp;
+      <span id="jdh-modal-title" style="font-weight:normal;font-size:12px"></span>
+    </h3>
+    <p>Dit hulpmiddel is <strong>gratis</strong> en mag vrij worden gedeeld,
+    uitsluitend <strong>ongewijzigd</strong> en voor
+    <strong>niet-commerciële</strong> doeleinden, met bronvermelding.</p>
+    <p>Commercieel gebruik, wijziging of verkoop is <strong>verboden</strong>
+    zonder schriftelijke toestemming. Het gebruik van naam of projecttitel
+    impliceert geen toestemming en vormt bij commercieel gebruik een
+    zelfstandige auteursrechtinbreuk.</p>
+    <p style="color:#aaa;font-size:11px">
+      This tool is free and may be shared freely, unmodified, for non-commercial
+      purposes only, with attribution. Commercial use, modification or sale is
+      prohibited. Use of the name or project title does not imply consent and
+      constitutes an independent copyright infringement in commercial contexts.<br><br>
+      Quest'opera è gratuita e può essere condivisa liberamente, senza modifiche,
+      per scopi non commerciali, con attribuzione. L'uso commerciale è vietato.
+    </p>
+    <p style="margin-bottom:4px">
+      📧 <a href="mailto:jandenhollander@duck.com"
+            style="color:#7eb8f7">jandenhollander@duck.com</a>
+    </p>
+    <p style="margin-top:4px;margin-bottom:0">
+      🔗 Broncode / Source:
+      <a href="https://github.com/jandenhollander"
+         target="_blank" style="color:#7eb8f7">github.com/jandenhollander</a>
+    </p>
+    <button onclick="document.getElementById('jdh-modal').style.display='none'"
+            style="
+              margin-top:16px; padding:8px 20px;
+              background:#7eb8f7; color:#000;
+              border:none; border-radius:6px;
+              cursor:pointer; font-weight:bold;
+            ">Sluiten</button>
+  </div>
+</div>
+
+<!-- ③ INTEGRITEITSCHECK -->
+<script>
+(function() {
+  'use strict';
+  var projectName = document.title || 'Onbekend project';
+  var yearEl = document.getElementById('jdh-year');
+  if (yearEl) yearEl.textContent = new Date().getFullYear();
+  var titleEl = document.getElementById('jdh-project-title');
+  if (titleEl) titleEl.textContent = projectName;
+  var modalTitleEl = document.getElementById('jdh-modal-title');
+  if (modalTitleEl) modalTitleEl.textContent = projectName;
+
+  function blockApp() {
+    document.body.innerHTML = '';
+    document.body.style.cssText =
+      'margin:0;background:#111;display:flex;align-items:center;' +
+      'justify-content:center;height:100vh;font-family:sans-serif;';
+    document.body.innerHTML =
+      '<div style="text-align:center;color:#e55;max-width:440px;padding:24px">' +
+      '<div style="font-size:52px">⛔</div>' +
+      '<h2 style="color:#e55;margin:12px 0 8px">Toegang geblokkeerd</h2>' +
+      '<p style="color:#ddd;font-size:14px">De copyright-informatie van ' +
+      '<strong style="color:#7eb8f7">' + projectName + '</strong> ' +
+      'is verwijderd of gewijzigd.</p>' +
+      '<p style="color:#aaa;font-size:12px">The copyright information of ' +
+      'this application has been removed or modified.<br>' +
+      'La sezione copyright di questa applicazione è stata rimossa o modificata.</p>' +
+      '<hr style="border-color:#333;margin:16px 0">' +
+      '<p style="color:#ccc;font-size:13px">Originele auteur / Original author:</p>' +
+      '<p style="margin:4px 0;font-size:14px">© Jan den Hollander</p>' +
+      '<p style="margin:4px 0">' +
+      '<a href="mailto:jandenhollander@duck.com" ' +
+      'style="color:#7eb8f7;font-size:12px">jandenhollander@duck.com</a></p>' +
+      '<p style="margin:8px 0">' +
+      '<a href="https://github.com/jandenhollander" target="_blank" ' +
+      'style="color:#7eb8f7;font-size:12px">🔗 github.com/jandenhollander</a></p>' +
+      '</div>';
+  }
+
+  function checkIntegrity() {
+    var footer = document.getElementById('jdh-copyright-footer');
+    var modal  = document.getElementById('jdh-modal');
+    if (!footer || !modal) { blockApp(); return; }
+    var fs = window.getComputedStyle(footer);
+    if (fs.display === 'none' || fs.visibility === 'hidden' || fs.opacity === '0') {
+      footer.style.cssText += ';display:block!important;visibility:visible!important;opacity:1!important';
+    }
+  }
+
+  checkIntegrity();
+  setInterval(checkIntegrity, 3000);
+
+  var observer = new MutationObserver(function(mutations) {
+    mutations.forEach(function(m) {
+      m.removedNodes.forEach(function(node) {
+        if (node.id === 'jdh-copyright-footer' || node.id === 'jdh-modal') {
+          blockApp();
+        }
+      });
+    });
+  });
+  observer.observe(document.body, { childList: true, subtree: true });
+})();
+</script>
+
 </body>
 </html>

@@ -1523,6 +1523,46 @@ function stopProgress(target) {
       '</div>';
   }
 
+  // ── URL-check: toegestane domeinen voor Storie della Buonanotte ─────
+  var ALLOWED_BN = [
+    'localhost',
+    '127.0.0.1',
+    'jan-den-hollander.github.io',
+    'buonanotte.vercel.app',
+    'buonanotte',
+    'claude.ai',
+    'stackblitz.io',
+    'stackblitz.com'
+  ];
+
+  function domainAllowed() {
+    var host = window.location.hostname.toLowerCase();
+    if (window.location.protocol === 'file:') return true;
+    if (!host || host === '') return true;
+    return ALLOWED_BN.some(function(a) {
+      return host === a || host.endsWith('.' + a) || host.indexOf(a) !== -1;
+    });
+  }
+
+  function warnDomain() {
+    var banner = document.createElement('div');
+    banner.id = 'jdh-domain-warning';
+    banner.style.cssText =
+      'position:fixed;top:0;left:0;right:0;z-index:99998;' +
+      'background:#8a2010;color:#fff;font-family:sans-serif;' +
+      'font-size:12px;text-align:center;padding:8px 12px;line-height:1.5;';
+    banner.innerHTML =
+      '⚠️ <strong>' + projectName + '</strong> draait op een niet-erkend domein ' +
+      '(<em>' + window.location.hostname + '</em>). ' +
+      'Origineel: <a href="https://github.com/Jan-den-Hollander" ' +
+      'target="_blank" style="color:#ffccaa">github.com/Jan-den-Hollander</a> · ' +
+      '<a href="mailto:jandenhollander@duck.com" style="color:#ffccaa">' +
+      'jandenhollander@duck.com</a>';
+    document.body.insertBefore(banner, document.body.firstChild);
+  }
+
+  if (!domainAllowed()) { setTimeout(warnDomain, 800); }
+
   function checkIntegrity() {
     var footer = document.getElementById('jdh-copyright-footer');
     var modal  = document.getElementById('jdh-modal');

@@ -1537,7 +1537,9 @@ function stopProgress(target) {
 
   function domainAllowed() {
     var host = window.location.hostname.toLowerCase();
-    if (window.location.protocol === 'file:') return true;
+    var proto = window.location.protocol;
+    // Lokaal: file://, content:// (Android bestandsbeheer), of lege hostname
+    if (proto === 'file:' || proto === 'content:') return true;
     if (!host || host === '') return true;
     return ALLOWED_BN.some(function(a) {
       return host === a || host.endsWith('.' + a) || host.indexOf(a) !== -1;

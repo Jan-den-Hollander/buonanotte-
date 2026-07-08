@@ -38,7 +38,15 @@
 <html lang="it">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Buonanotte">
+<meta name="theme-color" content="#2d1a50">
+<link rel="manifest" id="pwaManifestLink">
+<link rel="icon" id="pwaFavicon">
+<link rel="apple-touch-icon" id="pwaAppleIcon">
 <title>Storie della Buonanotte 🌙</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=Nunito:wght@300;400;600;700&display=swap');
@@ -677,6 +685,68 @@ audio {
 </style>
 </head>
 <body>
+<script>
+(function() {
+  try {
+    var svgIcoon =
+      '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">' +
+      '<rect width="512" height="512" rx="100" fill="#2d1a50"/>' +
+      '<text x="256" y="340" font-size="280" ' +
+      'text-anchor="middle">\uD83C\uDF19</text>' +
+      '</svg>';
+    var svgBase64 = btoa(unescape(encodeURIComponent(svgIcoon)));
+    var iconDataUrl = 'data:image/svg+xml;base64,' + svgBase64;
+    var faviconEl = document.getElementById('pwaFavicon');
+    if (faviconEl) faviconEl.href = iconDataUrl;
+    var appleIconEl = document.getElementById('pwaAppleIcon');
+    if (appleIconEl) appleIconEl.href = iconDataUrl;
+
+    var manifest = {
+      name: 'Storie della Buonanotte', short_name: 'Buonanotte',
+      description: 'Fiabe italiane con voce Gemini AI.',
+      start_url: '.', scope: '.', display: 'standalone', orientation: 'portrait',
+      background_color: '#110820', theme_color: '#2d1a50',
+      icons: [
+        { src: iconDataUrl, sizes: '192x192', type: 'image/svg+xml', purpose: 'any' },
+        { src: iconDataUrl, sizes: '512x512', type: 'image/svg+xml', purpose: 'any' },
+        { src: iconDataUrl, sizes: '512x512', type: 'image/svg+xml', purpose: 'maskable' }
+      ]
+    };
+    var manifestBlob = new Blob([JSON.stringify(manifest)], { type: 'application/manifest+json' });
+    var manifestUrl = URL.createObjectURL(manifestBlob);
+    var manifestEl = document.getElementById('pwaManifestLink');
+    if (manifestEl) manifestEl.href = manifestUrl;
+
+    if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {
+      var swCode =
+        "const CACHE = 'buonanotte-cache-v1';" +
+        "self.addEventListener('install', e => { self.skipWaiting(); });" +
+        "self.addEventListener('activate', e => { self.clients.claim(); });" +
+        "self.addEventListener('fetch', e => {" +
+        "  if (e.request.method !== 'GET') return;" +
+        "  e.respondWith(" +
+        "    caches.open(CACHE).then(cache =>" +
+        "      cache.match(e.request).then(cached => {" +
+        "        const netFetch = fetch(e.request).then(resp => {" +
+        "          if (resp && resp.ok) cache.put(e.request, resp.clone());" +
+        "          return resp;" +
+        "        }).catch(() => cached);" +
+        "        return cached || netFetch;" +
+        "      })" +
+        "    )" +
+        "  );" +
+        "});";
+      var swBlob = new Blob([swCode], { type: 'application/javascript' });
+      var swUrl = URL.createObjectURL(swBlob);
+      navigator.serviceWorker.register(swUrl).catch(function(e) {
+        console.error('Service worker registratie mislukt:', e);
+      });
+    }
+  } catch (e) {
+    console.error('PWA-setup fout:', e);
+  }
+})();
+</script>
 <div class="stars"></div>
 <div class="app">
 
@@ -1592,4 +1662,4 @@ function stopProgress(target) {
 </script>
 
 </body>
-</html>
+  </html>
